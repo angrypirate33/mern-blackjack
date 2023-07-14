@@ -16,11 +16,13 @@ export default function AuthPage({ setUser }) {
   }
   
     return (
-      <div>
-        <h1>AuthPage</h1>
+      <div className='container' id='login-box'>
         { userPref === 'signup' ? <LoginForm setUser={setUser} /> : <SignUpForm setUser={setUser} /> }
-        <button onClick={handlePref}>
-          { userPref === 'login' ? 'Already a member? Log In' : 'Need an Account? Sign Up' }
+        <button
+          className='waves-effect waves-light btn-large red'
+          id='login-btn' 
+          onClick={handlePref}>
+            { userPref === 'login' ? 'Already a member? Log In' : 'Need an Account? Sign Up' }
         </button>
       </div>
     )
