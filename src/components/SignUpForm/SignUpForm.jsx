@@ -48,7 +48,7 @@ export default class SignUpForm extends Component {
                             <input className='white-text' type="password" name="password" value={this.state.password} onChange={this.handleChange} required />
                             <label className='white-text'>Confirm</label>
                             <input className='white-text' type="password" name="confirm" value={this.state.confirm} onChange={this.handleChange} required />
-                            <button className='btn red' type="submit" disabled={disable}>SIGN UP</button>
+                            <button className='waves-effect waves-light btn-large red' type="submit" disabled={disable}>SIGN UP</button>
                         </form>
                     </div>
                 </div>
