@@ -8,12 +8,18 @@ export default function Nav({ user, setUser }) {
     }
 
     return (
-        <nav>
-            <Link to='/orders'>Order History</Link>
-            &nbsp; | &nbsp;
-            <Link to='/orders/new'>New Order</Link>
-            &nbsp;&nbsp;<span>Welcome, {user.name}</span>
-            &nbsp;&nbsp;<Link to="" onClick={handleLogOut}>Log Out</Link>
+        <nav className='green darken-4'>
+            <div className='nav-wrapper'>
+                <span>Welcome, {user.name}</span>
+                <Link 
+                    className='right' 
+                    id='logout-btn'
+                    to="" onClick={handleLogOut}
+                >
+                    Log Out
+                    &nbsp;&nbsp;&nbsp;
+                </Link>
+            </div>
         </nav>
     )
 }

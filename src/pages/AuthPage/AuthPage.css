@@ -1,6 +1,9 @@
 body {
     background-color: black;
-    padding-top: 15vmin;
+}
+
+#login-container {
+    margin-top: 15vmin;
 }
 
 

@@ -16,7 +16,7 @@ export default function AuthPage({ setUser }) {
   }
   
     return (
-      <div className='container' id='login-box'>
+      <div className='container' id='login-container'>
         { userPref === 'signup' ? <LoginForm setUser={setUser} /> : <SignUpForm setUser={setUser} /> }
         <button
           className='waves-effect waves-light btn-large red'
