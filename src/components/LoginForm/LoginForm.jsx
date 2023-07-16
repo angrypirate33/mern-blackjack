@@ -29,7 +29,14 @@ export default function LoginForm({ setUser }) {
                     <div className='card-content'>
                         <form autoComplete="off" onSubmit={handleSubmit}>
                             <label className='white-text'>Email</label>
-                            <input className='white-text' type="email" name="email" value={credentials.email} onChange={handleChange} required />
+                            <input 
+                                className='white-text' 
+                                type="email" 
+                                name="email" 
+                                value={credentials.email} 
+                                onChange={handleChange} 
+                                required 
+                            />
                             <label className='white-text'>Password</label>
                             <input className='white-text' type="password" name="password" value={credentials.password} onChange={handleChange} required />
                             <button className='waves-effect waves-light btn-large red' type="submit">Log In</button>
