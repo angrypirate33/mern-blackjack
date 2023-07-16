@@ -1,7 +1,7 @@
-import './AuthPage.css'
 import { useState } from 'react'
 import SignUpForm from '../../components/SignUpForm/SignUpForm'
 import LoginForm from '../../components/LoginForm/LoginForm'
+import './AuthPage.css'
 
 export default function AuthPage({ setUser }) {
 
@@ -16,7 +16,7 @@ export default function AuthPage({ setUser }) {
   }
   
     return (
-      <div className='container' id='login-container'>
+      <div className='container AuthPage' id='login-container'>
         { userPref === 'signup' ? <LoginForm setUser={setUser} /> : <SignUpForm setUser={setUser} /> }
         <button
           className='waves-effect waves-light btn-large red'

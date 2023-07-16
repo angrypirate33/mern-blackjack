@@ -23,7 +23,7 @@ export default function LoginForm({ setUser }) {
     }
 
     return (
-        <div>
+        <div className='LoginForm'>
             <div className="container">
                 <div className='card green darken-4'>
                     <div className='card-content'>
