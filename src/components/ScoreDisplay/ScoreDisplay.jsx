@@ -1,11 +1,11 @@
 
 import '../../components/ScoreDisplay/ScoreDisplay.css'
 
-export default function ScoreDisplay({ title, dealerScore }) {
+export default function ScoreDisplay({ title, score, className }) {
     return (
-        <div className='ScoreDisplay'>
+        <div className={`score-display ${className}`}>
             <h4>{title}</h4>
-            <h4>{dealerScore}</h4>
+            <h4>{score}</h4>
         </div>
 
     )
