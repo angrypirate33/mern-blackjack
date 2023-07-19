@@ -1,5 +1,5 @@
 
-import '../../components/DealerCards/DealerCards.css'
+import './DealerCards.css'
 
 export default function DealerCards() {
     return (

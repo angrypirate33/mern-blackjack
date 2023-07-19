@@ -16,10 +16,8 @@ export function buildOriginalDeck() {
     return deck;
 }
 
-export function getNewShuffledDeck() {
-    const tempDeck = [...originalDeck, ...originalDeck, ...originalDeck, ...originalDeck,
-        ...originalDeck, ...originalDeck, ...originalDeck, ...originalDeck, ...originalDeck,
-        ...originalDeck]
+export function getNewShuffledDeck(originalDeck) {
+    const tempDeck = Array(NUM_DECKS).fill(originalDeck).flat();
     const newShuffledDeck = []
     while (tempDeck.length) {
       const rndIdx = Math.floor(Math.random() * tempDeck.length)

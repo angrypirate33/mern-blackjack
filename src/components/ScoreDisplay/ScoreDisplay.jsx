@@ -1,5 +1,5 @@
 
-import '../../components/ScoreDisplay/ScoreDisplay.css'
+import './ScoreDisplay.css'
 
 export default function ScoreDisplay({ title, score, className }) {
     return (

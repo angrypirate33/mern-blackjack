@@ -5,7 +5,7 @@ import PlayerActions from '../PlayerActions/PlayerActions'
 import PlayerCards from '../PlayerCards/PlayerCards'
 import ScoreDisplay from '../ScoreDisplay/ScoreDisplay'
 import WagerInfo from '../WagerInfo/WagerInfo'
-import '../../components/Table/Table.css'
+import './Table.css'
 
 export default function Table() {
     return (

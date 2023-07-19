@@ -1,5 +1,5 @@
 
-import '../../components/PlayerCards/PlayerCards.css'
+import './PlayerCards.css'
 
 export default function PlayerCards() {
     return (

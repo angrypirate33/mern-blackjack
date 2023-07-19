@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import '../../components/BlackjackInfo/BlackjackInfo.css'
+import './BlackjackInfo.css'
 
 export default function BlackjackInfo() {
     const [rulesVisible, setRulesVisible] = useState(true)

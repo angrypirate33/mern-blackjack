@@ -1,5 +1,5 @@
 
-import '../../components/PlayerActions/PlayerActions.css'
+import './PlayerActions.css'
 
 export default function PlayerActions() {
     return (

@@ -1,5 +1,5 @@
 
-import '../../components/WagerInfo/WagerInfo.css'
+import './WagerInfo.css'
 
 export default function WagerInfo() {
     return (

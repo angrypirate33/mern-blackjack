@@ -1,5 +1,5 @@
 
-import '../../components/BankrollInfo/BankrollInfo.css'
+import './BankrollInfo.css'
 
 export default function BankrollInfo() {
     return (
