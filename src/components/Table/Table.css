@@ -30,12 +30,13 @@
 }
 
 .DealerCards {
-    margin-top: -20em;
+    margin-top: -24em;
     margin-left: 10em;
 }
 
 .WagerInfo {
     margin-top: -8em;
+    margin-left: 7em;
     padding: 5em;
 }
 
@@ -45,5 +46,6 @@
 }
 
 .PlayerActions {
-    margin-top: 0em;
+    margin-top: 0.5em;
+    margin-left: 5em;
 }

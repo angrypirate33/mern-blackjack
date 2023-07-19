@@ -1,0 +1,21 @@
+.WagerInfo {
+    display: flex;
+}
+
+#wager-amount {
+    height: 2em;
+    color: white;
+    background-color: black;
+}
+
+#place-bet-button {
+    margin-left: 1em;
+    height: 2.5em;
+    width: 20em;
+}
+
+#curr-sign {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-right: 0.25em;
+}

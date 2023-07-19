@@ -5,7 +5,7 @@ import './DealerCards.css'
 export default function DealerCards() {
     return (
         <div className='DealerCards'>
-            <h4>DealerCards</h4>
+            <h4>Dealer's Cards</h4>
             <Card cardClassName='sA' />
             <Card cardClassName='d10' />
             <Card cardClassName='c08' />

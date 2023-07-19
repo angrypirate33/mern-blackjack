@@ -5,7 +5,7 @@ import './PlayerCards.css'
 export default function PlayerCards({ cardClassName }) {
     return (
         <div className='PlayerCards'>
-            <h4>PlayerCards</h4>
+            <h4>Player's Cards</h4>
             <Card cardClassName='sA' />
             <Card cardClassName='d10' />
             <Card cardClassName='c08' />
