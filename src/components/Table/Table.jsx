@@ -5,6 +5,7 @@ import PlayerActions from '../PlayerActions/PlayerActions'
 import PlayerCards from '../PlayerCards/PlayerCards'
 import ScoreDisplay from '../ScoreDisplay/ScoreDisplay'
 import WagerInfo from '../WagerInfo/WagerInfo'
+import '../CardLibrary/css/cardstarter.min.css'
 import './Table.css'
 
 export default function Table() {
@@ -16,6 +17,8 @@ export default function Table() {
                     title="Dealer's Score"
                     score={16}
                 />
+            </div>
+            <div className='row'>
                 <DealerCards />
             </div>
             <div className='row'>
@@ -27,6 +30,8 @@ export default function Table() {
                     title="Player's Score"
                     score={18}
                 />
+            </div>
+            <div className='row'>
                 <PlayerCards />
             </div>
             <div className='row'>

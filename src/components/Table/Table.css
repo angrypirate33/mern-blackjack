@@ -20,29 +20,30 @@
 }
 
 .DealerScore {
-    margin-left: -25em;
-    margin-top: 10em;
+    margin-left: -50em;
+    margin-top: 8em;
 }
 
 .PlayerScore {
     margin-top: -5em;
-    margin-left: -25em;
+    margin-left: -50em;
 }
 
 .DealerCards {
-    margin-top: -15em;
+    margin-top: -20em;
     margin-left: 10em;
 }
 
 .WagerInfo {
-    margin-top: -2em;
+    margin-top: -8em;
+    padding: 5em;
 }
 
 .PlayerCards {
-    margin-top: 0em;
+    margin-top: -10em;
     margin-left: 10em;
 }
 
 .PlayerActions {
-    margin-top: 10em;
+    margin-top: 0em;
 }
