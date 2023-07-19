@@ -12,7 +12,7 @@ export default function Table() {
         <div className='Table'>
             <div className='row'>
                 <ScoreDisplay
-                    className='dealer-score'
+                    className='DealerScore'
                     title="Dealer's Score"
                     score={16}
                 />
@@ -23,6 +23,7 @@ export default function Table() {
             </div>
             <div className='row'>
                 <ScoreDisplay 
+                    className='PlayerScore'
                     title="Player's Score"
                     score={18}
                 />

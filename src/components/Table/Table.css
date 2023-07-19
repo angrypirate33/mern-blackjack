@@ -9,7 +9,7 @@
     border-radius: 15%;
     border-color: #D50000;
     margin: 2em;
-    height: 40em;
+    height: 50em;
     width: 95em;
 }
 
@@ -19,6 +19,30 @@
     align-items: center;
 }
 
-.dealer-score {
-    background-color: red;
+.DealerScore {
+    margin-left: -25em;
+    margin-top: 10em;
+}
+
+.PlayerScore {
+    margin-top: -5em;
+    margin-left: -25em;
+}
+
+.DealerCards {
+    margin-top: -10em;
+    margin-left: 10em;
+}
+
+.WagerInfo {
+    margin-top: -2em;
+}
+
+.PlayerCards {
+    margin-top: 0em;
+    margin-left: 10em;
+}
+
+.PlayerActions {
+    margin-top: 5em;
 }

@@ -3,6 +3,8 @@ import '../../components/DealerCards/DealerCards.css'
 
 export default function DealerCards() {
     return (
-        <h4>DealerCards</h4>
+        <div className='DealerCards'>
+            <h4>DealerCards</h4>
+        </div>
     )
 }

@@ -3,6 +3,10 @@
     flex-direction: column;
 }
 
+body {
+    background-color: black;
+}
+
 #login-container {
     width: 100%;
     max-width: 100%;
