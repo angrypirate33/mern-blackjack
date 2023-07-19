@@ -3,6 +3,6 @@ import '../../components/BankrollInfo/BankrollInfo.css'
 
 export default function BankrollInfo() {
     return (
-        <h2>BankrollInfo</h2>
+        <h4>BankrollInfo</h4>
     )
 }

@@ -10,12 +10,24 @@ import '../../components/Table/Table.css'
 export default function Table() {
     return (
         <div className='Table'>
-            <ScoreDisplay />
-            <DealerCards />
-            <WagerInfo />
-            <ScoreDisplay />
-            <PlayerCards />
-            <PlayerActions />
+            <div className='row'>
+                <ScoreDisplay
+                    title="Dealer's Score"
+                />
+                <DealerCards />
+            </div>
+            <div className='row'>
+                <WagerInfo />
+            </div>
+            <div className='row'>
+                <ScoreDisplay 
+                    title="Player's Score"
+                />
+                <PlayerCards />
+            </div>
+            <div className='row'>
+                <PlayerActions />
+            </div>
         </div>
     )
 }
