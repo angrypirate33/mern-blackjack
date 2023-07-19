@@ -1,0 +1,6 @@
+
+#hit-button, #stand-button {
+    border: solid black;
+    width: 10em;
+    font-weight: bold;
+}
