@@ -1,10 +1,10 @@
 
 import './BankrollInfo.css'
 
-export default function BankrollInfo() {
+export default function BankrollInfo({ amount }) {
     return (
         <div className='BankrollInfo'>
-            <h5>Bankroll: $1000</h5>
+            <h5>Bankroll: ${amount}</h5>
         </div>
     )
 }

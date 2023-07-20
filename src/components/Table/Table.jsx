@@ -32,7 +32,9 @@ export default function Table({ currWager, bankAmt, playerCards, dealerCards }) 
             </div>
                 <div className='row'>
                     <div className='col s12'>
-                        <BankrollInfo />
+                        <BankrollInfo 
+                            amount={bankAmt}
+                        />
                     </div>
                 </div>
             <div className='row'>
