@@ -4,7 +4,7 @@ import './Card.css'
 
 export default function Card({ cardClassName }) {
     return (
-        <div className={`card ${cardClassName}`}>
+        <div className={`Card ${cardClassName}`}>
 
         </div>
     )
