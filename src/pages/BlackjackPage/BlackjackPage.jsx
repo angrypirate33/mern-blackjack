@@ -8,8 +8,8 @@ export default function BlackjackPage() {
 
     const [currWager, setCurrWager] = useState(0)
     const [bankAmt, setBankAmt] = useState(1000)
-    const [playerCards, setPlayerCards] = useState([])
-    const [dealerCards, setDealerCards] = useState([])
+    const [playerCards, setPlayerCards] = useState(['sA','sK'])
+    const [dealerCards, setDealerCards] = useState(['dA', 'd10'])
 
     const originalDeck = buildOriginalDeck()
     const shuffledDeck = getNewShuffledDeck(originalDeck)

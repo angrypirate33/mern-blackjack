@@ -12,34 +12,42 @@ export default function Table({ currWager, bankAmt, playerCards, dealerCards }) 
     return (
         <div className='Table'>
             <div className='row'>
-                <ScoreDisplay
-                    className='DealerScore'
-                    title="Dealer's Score"
-                    score={16}
-                />
+                <div className='col s12 m3'>
+                    <ScoreDisplay
+                        className='DealerScore'
+                        title="Dealer's Score"
+                        score={16}
+                    />
+                </div>
+                <div className='col s12 m9'>
+                    <DealerCards
+                        cards={dealerCards}
+                    />
+                </div>
             </div>
             <div className='row'>
-                <DealerCards 
-                    cards={dealerCards}
-                />
+                <div className='col s12'>
+                    <WagerInfo />
+                </div>
             </div>
             <div className='row'>
-                <WagerInfo />
+                <div className='col s12 m3'>
+                    <ScoreDisplay
+                        className='PlayerScore'
+                        title="Player's Score"
+                        score={18}
+                    />
+                </div>
+                <div className='col s12 m9'>
+                    <PlayerCards
+                        cards={playerCards}
+                    />
+                </div>
             </div>
             <div className='row'>
-                <ScoreDisplay 
-                    className='PlayerScore'
-                    title="Player's Score"
-                    score={18}
-                />
-            </div>
-            <div className='row'>
-                <PlayerCards 
-                    cards={playerCards}
-                />
-            </div>
-            <div className='row'>
-                <PlayerActions />
+                <div className='col s12'>
+                    <PlayerActions />
+                </div>
             </div>
         </div>
     )

@@ -6,7 +6,7 @@ export default function DealerCards({ cardClassName, cards }) {
     return (
         <div className='DealerCards'>
             <h4>Dealer's Cards</h4>
-            {cards.map(card => <Card card={card} cardClassName={card} />)}
+            {cards.map((card, index) => <Card key={index} card={card} cardClassName={card} />)}
         </div>
     )
 }
