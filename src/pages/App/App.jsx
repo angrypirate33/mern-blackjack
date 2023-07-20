@@ -8,19 +8,29 @@ import './App.css'
 
 
 export default function App() {
+
   const [user, setUser] = useState(getUser())
+
+  const handleSetUser = (userData) => {
+    if (userData === 'GUEST') {
+      setUser({ name: 'Guest' })
+    } else {
+      setUser(userData)
+    }
+  }
+
   return (
     <main className="App">
       {
         user ?  
         <>
-          <Nav user={user} setUser={setUser} />
+          <Nav user={user} setUser={handleSetUser} />
           <Routes>
             <Route path='/' element={<BlackjackPage />} />
           </Routes>
         </>
         : 
-        <AuthPage setUser={setUser} />
+        <AuthPage setUser={handleSetUser} />
       }
     </main>
   )

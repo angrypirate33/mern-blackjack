@@ -14,6 +14,10 @@ export default function AuthPage({ setUser }) {
       setUserPref('signup')
     }
   }
+
+    const handleGuestPlay = () => {
+      setUser('GUEST')
+    }
   
     return (
       <div className='container AuthPage' id='login-container'>
@@ -28,6 +32,7 @@ export default function AuthPage({ setUser }) {
         <button
           className='waves-effect waves-light btn-large red'
           id='guest-button'
+          onClick={handleGuestPlay}
         >
           Play as a Guest
         </button>
