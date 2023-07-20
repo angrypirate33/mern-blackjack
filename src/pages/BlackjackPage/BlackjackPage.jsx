@@ -14,6 +14,7 @@ export default function BlackjackPage() {
     const [dealerScore, setDealerScore] = useState(null)
     const [playerScore, setPlayerScore] = useState(null)
     const [deck, setDeck] = useState([])
+    const [dealerRevealed, setDealerRevealed] = useState(false)
 
     useEffect(() => {
         const originalDeck = buildOriginalDeck()
@@ -53,6 +54,28 @@ export default function BlackjackPage() {
         dealCards()
     }
 
+    function calculateScore(cards, dealerRevealed) {
+        let score = 0
+        let aces = 0
+
+        for (let i = 0; i < cards.length; i++) {
+            if (i === 0 && !dealerRevealed) {
+                continue
+            }
+            let card = cards[i]
+            score += card.value
+            if (card.value === 11) {
+                aces += 1
+            }
+        }
+        return score
+    }
+
+    function revealDealer() {
+        setDealerRevealed(true)
+        setDealerScore(calculateScore(dealerCards))
+    }
+
     return (
         <div className='BlackjackPage'>
             <BlackjackInfo 
@@ -69,6 +92,7 @@ export default function BlackjackPage() {
                 playerScore={playerScore}
                 setPlayerScore={setPlayerScore}
                 storeAndDeal={storeAndDeal}
+                dealerRevealed={dealerRevealed}
             />
         </div>
     )
