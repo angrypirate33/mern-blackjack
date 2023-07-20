@@ -21,8 +21,15 @@ export default function AuthPage({ setUser }) {
         <button
           className='waves-effect waves-light btn-large red'
           id='login-btn' 
-          onClick={handlePref}>
-            { userPref === 'login' ? 'Already a member? Log In' : 'Need an Account? Sign Up' }
+          onClick={handlePref}
+        >
+          { userPref === 'login' ? 'Already a member? Log In' : 'Need an Account? Sign Up' }
+        </button>
+        <button
+          className='waves-effect waves-light btn-large red'
+          id='guest-button'
+        >
+          Play as a Guest
         </button>
       </div>
     )
