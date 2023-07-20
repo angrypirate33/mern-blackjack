@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import './BlackjackInfo.css'
 
-export default function BlackjackInfo() {
-    const [rulesVisible, setRulesVisible] = useState(true)
+export default function BlackjackInfo({ rulesVisible, setRulesVisible }) {
 
     const toggleRulesVisibility = () => {
         setRulesVisible(!rulesVisible)
