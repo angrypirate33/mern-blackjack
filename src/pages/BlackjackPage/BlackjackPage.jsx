@@ -21,6 +21,37 @@ export default function BlackjackPage() {
         setDeck(shuffledDeck)
     }, [])
 
+    function storeWager(wagerAmt) {
+        if (wagerAmt <= bankAmt) {
+            setCurrWager(wagerAmt)
+            setBankAmt(bankAmt - wagerAmt)
+        }
+    }
+
+    async function dealCards() {
+        const deckCopy = [...deck]
+        const pCards = [...playerCards]
+        const dCards = [...dealerCards]
+
+        for (let i = 0; i < 4; i++) {
+            setTimeout(() => {
+                const card = deckCopy.shift()
+                if (i % 2 === 0) {
+                    pCards.push(card)
+                    setPlayerCards([...pCards])
+                } else {
+                    dCards.push(card)
+                    setDealerCards([...dCards])
+                }
+                setDeck([...deckCopy])
+            }, 1000 * (i+1))
+        }
+    }
+
+    function storeAndDeal(wagerAmt) {
+        storeWager(wagerAmt)
+        dealCards()
+    }
 
     return (
         <div className='BlackjackPage'>
@@ -37,6 +68,7 @@ export default function BlackjackPage() {
                 setDealerScore={setDealerScore}
                 playerScore={playerScore}
                 setPlayerScore={setPlayerScore}
+                storeAndDeal={storeAndDeal}
             />
         </div>
     )
