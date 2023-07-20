@@ -2,14 +2,11 @@
 import Card from '../../components/Card/Card'
 import './PlayerCards.css'
 
-export default function PlayerCards({ cardClassName }) {
+export default function PlayerCards({ cardClassName, cards }) {
     return (
         <div className='PlayerCards'>
             <h4>Player's Cards</h4>
-            <Card cardClassName='sA' />
-            <Card cardClassName='d10' />
-            <Card cardClassName='c08' />
-            <Card cardClassName='s07' />
+            {cards.map(card => <Card card={card} cardClassName={card} />)}
         </div>
     )
 }

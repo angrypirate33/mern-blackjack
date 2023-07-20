@@ -2,14 +2,11 @@ import Card from '../../components/Card/Card'
 import '../CardLibrary/css/cardstarter.min.css'
 import './DealerCards.css'
 
-export default function DealerCards() {
+export default function DealerCards({ cardClassName, cards }) {
     return (
         <div className='DealerCards'>
             <h4>Dealer's Cards</h4>
-            <Card cardClassName='sA' />
-            <Card cardClassName='d10' />
-            <Card cardClassName='c08' />
-            <Card cardClassName='s07' />
+            {cards.map(card => <Card card={card} cardClassName={card} />)}
         </div>
     )
 }
