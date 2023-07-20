@@ -8,14 +8,18 @@ export default function BlackjackPage() {
 
     const [currWager, setCurrWager] = useState(0)
     const [bankAmt, setBankAmt] = useState(1000)
-    const [playerCards, setPlayerCards] = useState(['sA','sK'])
-    const [dealerCards, setDealerCards] = useState(['dA', 'd10'])
+    const [playerCards, setPlayerCards] = useState([])
+    const [dealerCards, setDealerCards] = useState([])
     const [rulesVisible, setRulesVisible] = useState(false)
     const [dealerScore, setDealerScore] = useState(null)
     const [playerScore, setPlayerScore] = useState(null)
+    const [deck, setDeck] = useState([])
 
-    const originalDeck = buildOriginalDeck()
-    const shuffledDeck = getNewShuffledDeck(originalDeck)
+    useEffect(() => {
+        const originalDeck = buildOriginalDeck()
+        const shuffledDeck = getNewShuffledDeck(originalDeck)
+        setDeck(shuffledDeck)
+    }, [])
 
 
     return (
