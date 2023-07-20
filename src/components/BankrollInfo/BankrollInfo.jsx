@@ -3,6 +3,8 @@ import './BankrollInfo.css'
 
 export default function BankrollInfo() {
     return (
-        <h4>BankrollInfo</h4>
+        <div className='BankrollInfo'>
+            <h5>Bankroll: $1000</h5>
+        </div>
     )
 }

@@ -30,6 +30,11 @@ export default function Table({ currWager, bankAmt, playerCards, dealerCards }) 
                     <WagerInfo />
                 </div>
             </div>
+                <div className='row'>
+                    <div className='col s12'>
+                        <BankrollInfo />
+                    </div>
+                </div>
             <div className='row'>
                 <div className='col s12 m3'>
                     <ScoreDisplay

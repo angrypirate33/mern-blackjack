@@ -14,10 +14,6 @@
     padding: 2em;
 }
 
-.row {
-    display: flex;
-}
-
 .DealerScore, .PlayerScore {
     margin-right: 22em;
     margin-top: 4em;
@@ -27,6 +23,15 @@
     margin-left: 8em;
 }
 
+.DealerCards {
+    margin-top: -2em;
+}
+
 .WagerInfo {
-    padding-top: 1em;
+    padding-left: 5em;
+}
+
+.BankrollInfo {
+    margin-top: -2em;
+    margin-bottom: -3em;
 }
