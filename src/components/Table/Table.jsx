@@ -8,7 +8,18 @@ import WagerInfo from '../WagerInfo/WagerInfo'
 import '../CardLibrary/css/cardstarter.min.css'
 import './Table.css'
 
-export default function Table({ currWager, bankAmt, playerCards, dealerCards, dealerScore, playerScore, storeAndDeal, dealerRevealed }) {
+export default function Table({ 
+                            currWager, 
+                            bankAmt, 
+                            playerCards, 
+                            dealerCards, 
+                            dealerScore, 
+                            playerScore, 
+                            storeAndDeal, 
+                            dealerRevealed,
+                            playerHit,
+                            playerStand
+                        }) {
     return (
         <div className='Table'>
             <div className='row'>
@@ -56,7 +67,10 @@ export default function Table({ currWager, bankAmt, playerCards, dealerCards, de
             </div>
             <div className='row'>
                 <div className='col s12'>
-                    <PlayerActions />
+                    <PlayerActions 
+                        hit={playerHit}
+                        stand={playerStand}
+                    />
                 </div>
             </div>
         </div>

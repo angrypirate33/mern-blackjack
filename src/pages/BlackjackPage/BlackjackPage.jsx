@@ -15,6 +15,7 @@ export default function BlackjackPage() {
     const [playerScore, setPlayerScore] = useState(null)
     const [deck, setDeck] = useState([])
     const [dealerRevealed, setDealerRevealed] = useState(false)
+    const [turn, setTurn] = useState('player')
 
     useEffect(() => {
         const originalDeck = buildOriginalDeck()
@@ -33,16 +34,24 @@ export default function BlackjackPage() {
         const deckCopy = [...deck]
         const pCards = [...playerCards]
         const dCards = [...dealerCards]
+        let pScore = { total: 0, aces: 0 }
+        let dScore = { total: 0, aces: 0 }
+        let dFullScore = { total: 0, aces: 0 }
 
         for (let i = 0; i < 4; i++) {
             setTimeout(() => {
                 const card = deckCopy.shift()
                 if (i % 2 === 0) {
                     pCards.push(card)
+                    pScore = calculateScore(pCards, false, false)
                     setPlayerCards([...pCards])
+                    setPlayerScore(pScore)
                 } else {
                     dCards.push(card)
+                    dFullScore = calculateScore(dCards, true, true)
+                    dScore = calculateScore(dCards, true, false)
                     setDealerCards([...dCards])
+                    setDealerScore(dScore)
                 }
                 setDeck([...deckCopy])
             }, 1000 * (i+1))
@@ -54,12 +63,12 @@ export default function BlackjackPage() {
         dealCards()
     }
 
-    function calculateScore(cards, dealerRevealed) {
+    function calculateScore(cards, isDealer, dealerRevealed) {
         let score = 0
         let aces = 0
 
         for (let i = 0; i < cards.length; i++) {
-            if (i === 0 && !dealerRevealed) {
+            if (isDealer && i === 0 && !dealerRevealed) {
                 continue
             }
             let card = cards[i]
@@ -73,7 +82,69 @@ export default function BlackjackPage() {
 
     function revealDealer() {
         setDealerRevealed(true)
-        setDealerScore(calculateScore(dealerCards))
+        setDealerScore(calculateScore(dealerCards, true, true))
+    }
+
+    function playerHit() {
+        const deckCopy = [...deck]
+        const pCards = [...playerCards]
+
+        const card = deckCopy.shift()
+        pCards.push(card)
+
+        const pScore = calculateScore(pCards, false, false)
+
+        setPlayerCards([...pCards])
+        setPlayerScore(pScore.total)
+        setDeck([...deckCopy])
+
+        if (pScore > 21) {
+            setTurn('dealer')
+        }
+    }
+
+    function playerStand() {
+        setTurn('dealer')
+    }
+
+    function dealerAction() {
+        if (turn !== 'dealer') {
+            return
+        }
+
+        const drawCard = () => {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const deckCopy = [...deck]
+                    const dCards = [...dealerCards]
+                    
+                    const card = deckCopy.shift()
+                    dCards.push(card)
+
+                    const dScore = calculateScore(dCards, true, true)
+
+                    setDealerCards([...dCards])
+                    setDealerScore(dScore)
+                    setDeck([...deckCopy])
+
+                    resolve(dScore)
+                }, 1000)
+            })
+        }
+
+        const drawUntil17 = async () => {
+            let dScore = calculateScore(dealerCards, true, true)
+
+             while (dScore.total <= 16) {
+                dScore = await drawCard()
+             }
+
+             if (dScore.total > 21) {
+                 
+             }
+        }
+
+        drawUntil17()
     }
 
     return (
@@ -93,6 +164,8 @@ export default function BlackjackPage() {
                 setPlayerScore={setPlayerScore}
                 storeAndDeal={storeAndDeal}
                 dealerRevealed={dealerRevealed}
+                playerHit={playerHit}
+                playerStand={playerStand}
             />
         </div>
     )
