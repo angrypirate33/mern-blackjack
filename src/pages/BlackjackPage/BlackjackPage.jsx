@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { buildOriginalDeck, getNewShuffledDeck } from '../../utilities/deck'
 import BlackjackInfo from '../../components/BlackjackInfo/BlackjackInfo'
 import Table from '../../components/Table/Table'
+import MessageCenter from '../../components/MessageCenter/MessageCenter'
 import '../../pages/BlackjackPage/BlackjackPage.css'
 
 export default function BlackjackPage() {
@@ -16,6 +17,7 @@ export default function BlackjackPage() {
     const [deck, setDeck] = useState([])
     const [dealerRevealed, setDealerRevealed] = useState(false)
     const [turn, setTurn] = useState('player')
+    const [message, setMessage] = useState('')
 
     useEffect(() => {
         const originalDeck = buildOriginalDeck()
@@ -205,6 +207,9 @@ export default function BlackjackPage() {
                 dealerRevealed={dealerRevealed}
                 playerHit={playerHit}
                 playerStand={playerStand}
+            />
+            <MessageCenter
+                message={message}
             />
         </div>
     )
