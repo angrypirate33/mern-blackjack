@@ -45,11 +45,16 @@ export default function BlackjackPage() {
                 }
                 if (dealerScore.total > 21) {
                     setBankAmt(bankAmt + currWager * 2)
+                    setMessage(`Dealer busts, player wins $${currWager * 2}!`)
                 } else {
                     if (dealerScore.total === playerScore) {
                         setBankAmt(bankAmt + currWager)
+                        setMessage(`Push, $${currWager} has been returned to the player's bankroll.`)
                     } else if (dealerScore.total < playerScore) {
                         setBankAmt(bankAmt + currWager * 2)
+                        setMessage(`Player wins $${currWager}!`)
+                    } else {
+                        setMessage(`Dealer wins, player loses $${currWager}.`)
                     }
                 }
             }
@@ -80,7 +85,7 @@ export default function BlackjackPage() {
                     if (i === 3) {
                         dScore = calculateScore(dCards, true, false)
                         setDealerScore(dScore)
-                        setMessage("Player's Turn")
+                        setMessage("Player's Action")
                     }
                     setDealerCards([...dCards])
                 }
@@ -96,10 +101,12 @@ export default function BlackjackPage() {
 
         if (playerScore === 21 && dealerScore?.total !== 21) {
             setBankAmt(bankAmt + currWager * 2.5)
+            setMessage(`Player hit blackjack and wins $${currWager + currWager * 2.5}!`)
             return
         }
 
         if (dealerScore?.total === 21 && playerScore !== 21) {
+            setMessage(`Dealer hit blackjack, player loses $${currWager}.`)
             return
         }
 
@@ -157,6 +164,7 @@ export default function BlackjackPage() {
     function playerStand() {
         if (turn === 'player') {
             setTurn('dealer')
+            setMessage("Dealer's Action")
             setDealerRevealed(true)
             setTimeout(dealerAction, 1000)
         }
