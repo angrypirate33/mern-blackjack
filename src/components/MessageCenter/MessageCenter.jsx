@@ -1,8 +1,8 @@
 
 import './MessageCenter.css'
 
-export default function MessageCenter() {
+export default function MessageCenter({ message }) {
     return (
-        <h4>MessageCenter</h4>
+        <h4>{message}</h4>
     )
 }

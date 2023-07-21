@@ -58,6 +58,7 @@ export default function BlackjackPage() {
     }, [turn, dealerScore, playerScore, currWager, bankAmt, resetTable])
 
     async function dealCards() {
+        setMessage('Dealing Cards')
         const deckCopy = [...deck]
         const pCards = [...playerCards]
         const dCards = [...dealerCards]
@@ -79,6 +80,7 @@ export default function BlackjackPage() {
                     if (i === 3) {
                         dScore = calculateScore(dCards, true, false)
                         setDealerScore(dScore)
+                        setMessage("Player's Turn")
                     }
                     setDealerCards([...dCards])
                 }
