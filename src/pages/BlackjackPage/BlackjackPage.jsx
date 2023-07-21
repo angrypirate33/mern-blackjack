@@ -91,6 +91,9 @@ export default function BlackjackPage() {
     }
 
     function playerHit() {
+        if (turn === 'dealer') {
+            return
+        }
         const deckCopy = [...deck]
         const pCards = [...playerCards]
 
@@ -103,53 +106,36 @@ export default function BlackjackPage() {
         setPlayerScore(pScore)
         setDeck([...deckCopy])
 
-        if (pScore.total > 21) {
+        if (pScore > 21) {
             setTurn('dealer')
+            setTimeout(dealerAction, 1000)
         }
     }
 
     function playerStand() {
         setTurn('dealer')
+        setTimeout(dealerAction, 1000)
     }
 
     function dealerAction() {
-        if (turn !== 'dealer') {
-            return
+        const drawCard = (cards) => {
+            const deckCopy = [...deck]
+            const dCards = [...cards]
+
+            const card = deckCopy.shift()
+            dCards.push(card)
+
+            const dScore = calculateScore(dCards, true, true)
+
+            setDealerCards([...dCards])
+            setDealerScore(dScore)
+            setDeck([...deckCopy])
+
+            if (dScore.total <= 16 ) {
+                setTimeout(() => drawCard(dCards), 1000)
+            }
         }
-
-        const drawCard = () => {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    const deckCopy = [...deck]
-                    const dCards = [...dealerCards]
-                    
-                    const card = deckCopy.shift()
-                    dCards.push(card)
-
-                    const dScore = calculateScore(dCards, true, true)
-
-                    setDealerCards([...dCards])
-                    setDealerScore(dScore)
-                    setDeck([...deckCopy])
-
-                    resolve(dScore)
-                }, 1000)
-            })
-        }
-
-        const drawUntil17 = async () => {
-            let dScore = calculateScore(dealerCards, true, true)
-
-             while (dScore.total <= 16) {
-                dScore = await drawCard()
-             }
-
-             if (dScore.total > 21) {
-                 
-             }
-        }
-
-        drawUntil17()
+        drawCard(dealerCards)
     }
 
     return (
