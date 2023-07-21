@@ -151,9 +151,11 @@ export default function BlackjackPage() {
     }
 
     function playerStand() {
-        setTurn('dealer')
-        setDealerRevealed(true)
-        setTimeout(dealerAction, 1000)
+        if (turn === 'player') {
+            setTurn('dealer')
+            setDealerRevealed(true)
+            setTimeout(dealerAction, 1000)
+        }
     }
 
     function dealerHit() {
