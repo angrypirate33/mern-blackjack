@@ -30,6 +30,31 @@ export default function BlackjackPage() {
         }
     }
 
+    useEffect(() => {
+        async function dealerTurn() {
+            if (turn === 'dealer') {
+                while (dealerScore.total <=16) {
+                    await new Promise((resolve) => {
+                        setTimeout(() => {
+                            dealerHit()
+                            resolve()
+                        }, 1000)
+                    })
+                }
+                if (dealerScore.total > 21) {
+                    setBankAmt(bankAmt + currWager * 2)
+                } else {
+                    if (dealerScore.total === playerScore) {
+                        setBankAmt(bankAmt + currWager)
+                    } else if (dealerScore.total < playerScore) {
+                        setBankAmt(bankAmt + currWager * 2)
+                    }
+                }
+            }
+        }
+        dealerTurn()
+    }, [turn, dealerScore, playerScore, currWager, bankAmt, resetTable])
+
     async function dealCards() {
         const deckCopy = [...deck]
         const pCards = [...playerCards]
@@ -49,18 +74,31 @@ export default function BlackjackPage() {
                 } else {
                     dCards.push(card)
                     dFullScore = calculateScore(dCards, true, true)
-                    dScore = calculateScore(dCards, true, false)
+                    if (i === 3) {
+                        dScore = calculateScore(dCards, true, false)
+                        setDealerScore(dScore)
+                    }
                     setDealerCards([...dCards])
-                    setDealerScore(dScore)
                 }
                 setDeck([...deckCopy])
             }, 1000 * (i+1))
         }
     }
 
-    function storeAndDeal(wagerAmt) {
+    async function storeAndDeal(wagerAmt) {
+        resetTable()
         storeWager(wagerAmt)
-        dealCards()
+        await dealCards()
+
+        if (playerScore === 21 && dealerScore?.total !== 21) {
+            setBankAmt(bankAmt + currWager * 2.5)
+            return
+        }
+
+        if (dealerScore?.total === 21 && playerScore !== 21) {
+            return
+        }
+
     }
 
     function calculateScore(cards, isDealer, dealerRevealed) {
@@ -114,28 +152,36 @@ export default function BlackjackPage() {
 
     function playerStand() {
         setTurn('dealer')
+        setDealerRevealed(true)
         setTimeout(dealerAction, 1000)
     }
 
+    function dealerHit() {
+        const deckCopy = [...deck]
+        const dCards = [...dealerCards]
+
+        const card = deckCopy.shift()
+        dCards.push(card)
+
+        const dScore = calculateScore(dCards, true, true)
+
+        setDealerCards([...dCards])
+        setDealerScore(dScore)
+        setDeck([...deckCopy])
+    }
+
     function dealerAction() {
-        const drawCard = (cards) => {
-            const deckCopy = [...deck]
-            const dCards = [...cards]
+        dealerHit()
+    }
 
-            const card = deckCopy.shift()
-            dCards.push(card)
-
-            const dScore = calculateScore(dCards, true, true)
-
-            setDealerCards([...dCards])
-            setDealerScore(dScore)
-            setDeck([...deckCopy])
-
-            if (dScore.total <= 16 ) {
-                setTimeout(() => drawCard(dCards), 1000)
-            }
-        }
-        drawCard(dealerCards)
+    function resetTable() {
+        setPlayerCards([])
+        setDealerCards([])
+        setDealerScore(null)
+        setPlayerScore(null)
+        setDealerRevealed(false)
+        setTurn('player')
+        setCurrWager(0)
     }
 
     return (
