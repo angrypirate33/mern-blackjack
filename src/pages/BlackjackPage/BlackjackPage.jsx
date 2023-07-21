@@ -72,10 +72,15 @@ export default function BlackjackPage() {
                 continue
             }
             let card = cards[i]
-            score += card.value
             if (card.value === 11) {
                 aces += 1
             }
+            score += card.value
+        }
+
+        while (score > 21 && aces > 0) {
+            score -= 10
+            aces -= 1
         }
         return score
     }
@@ -95,10 +100,10 @@ export default function BlackjackPage() {
         const pScore = calculateScore(pCards, false, false)
 
         setPlayerCards([...pCards])
-        setPlayerScore(pScore.total)
+        setPlayerScore(pScore)
         setDeck([...deckCopy])
 
-        if (pScore > 21) {
+        if (pScore.total > 21) {
             setTurn('dealer')
         }
     }
