@@ -28,30 +28,27 @@ export default function BlackjackPage() {
     function storeWager(wagerAmt) {
         if (wagerAmt <= bankAmt) {
             setCurrWager(wagerAmt)
-            setBankAmt(bankAmt - wagerAmt)
+            setBankAmt((prevBankAmt) => prevBankAmt - wagerAmt)
         }
     }
 
     useEffect(() => {
         async function dealerTurn() {
             if (turn === 'dealer') {
-                while (dealerScore.total <=16) {
-                    await new Promise((resolve) => {
-                        setTimeout(() => {
-                            dealerHit()
-                            resolve()
-                        }, 1000)
-                    })
+                let score = dealerScore.total
+                while (score <= 16) {
+                            const newScore = dealerHit()
+                            score = newScore.total
                 }
-                if (dealerScore.total > 21) {
-                    setBankAmt(bankAmt + currWager * 2)
+                if (score > 21) {
+                    setBankAmt((prevBankAmt) => prevBankAmt + currWager * 2)
                     setMessage(`Dealer busts, player wins $${currWager * 2}!`)
                 } else {
-                    if (dealerScore.total === playerScore) {
-                        setBankAmt(bankAmt + currWager)
+                    if (score === playerScore.total) {
+                        setBankAmt((prevBankAmt) => prevBankAmt + currWager)
                         setMessage(`Push, $${currWager} has been returned to the player's bankroll.`)
-                    } else if (dealerScore.total < playerScore) {
-                        setBankAmt(bankAmt + currWager * 2)
+                    } else if (score < playerScore.total) {
+                        setBankAmt((prevBankAmt) => prevBankAmt + currWager * 2)
                         setMessage(`Player wins $${currWager}!`)
                     } else {
                         setMessage(`Dealer wins, player loses $${currWager}.`)
@@ -60,53 +57,59 @@ export default function BlackjackPage() {
             }
         }
         dealerTurn()
-    }, [turn, dealerScore, playerScore, currWager, bankAmt, resetTable])
+    }, [turn, dealerScore, playerScore, resetTable])
 
     async function dealCards() {
-        setMessage('Dealing Cards')
-        const deckCopy = [...deck]
-        const pCards = [...playerCards]
-        const dCards = [...dealerCards]
-        let pScore = { total: 0, aces: 0 }
-        let dScore = { total: 0, aces: 0 }
-        let dFullScore = { total: 0, aces: 0 }
+        return new Promise(resolve => {
+            setMessage('Dealing Cards')
+            const deckCopy = [...deck]
+            const pCards = [...playerCards]
+            const dCards = [...dealerCards]
+            let pScore = { total: 0, aces: 0 }
+            let dScore = { total: 0, aces: 0 }
+            let dFullScore = { total: 0, aces: 0 }
 
-        for (let i = 0; i < 4; i++) {
-            setTimeout(() => {
-                const card = deckCopy.shift()
-                if (i % 2 === 0) {
-                    pCards.push(card)
-                    pScore = calculateScore(pCards, false, false)
-                    setPlayerCards([...pCards])
-                    setPlayerScore(pScore)
-                } else {
-                    dCards.push(card)
-                    dFullScore = calculateScore(dCards, true, true)
-                    if (i === 3) {
-                        dScore = calculateScore(dCards, true, false)
-                        setDealerScore(dScore)
-                        setMessage("Player's Action")
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => {
+                    const card = deckCopy.shift()
+                    if (i % 2 === 0) {
+                        pCards.push(card)
+                        pScore = calculateScore(pCards, false, false)
+                        setPlayerCards([...pCards])
+                        setPlayerScore(pScore)
+                    } else {
+                        dCards.push(card)
+                        dFullScore = calculateScore(dCards, true, true)
+                        if (i === 3) {
+                            dScore = calculateScore(dCards, true, false)
+                            setDealerScore(dScore)
+                            setMessage("Player's Action")
+                        }
+                        setDealerCards([...dCards])
                     }
-                    setDealerCards([...dCards])
-                }
-                setDeck([...deckCopy])
-            }, 1000 * (i+1))
-        }
+                    setDeck([...deckCopy])
+
+                    if (i === 3) {
+                        resolve ({ playerScore: pScore, dealerScore: dScore })
+                    }
+                }, 1000 * (i+1))
+            }
+        })
     }
 
     async function storeAndDeal(wagerAmt) {
         resetTable()
         storeWager(wagerAmt)
-        await dealCards()
+        const { playerScore, dealerScore } = await dealCards()
 
-        if (playerScore === 21 && dealerScore?.total !== 21) {
-            setBankAmt(bankAmt + currWager * 2.5)
-            setMessage(`Player hit blackjack and wins $${currWager + currWager * 2.5}!`)
+        if (playerScore?.total === 21 && dealerScore?.total !== 21) {
+            setBankAmt((prevBankAmt) => prevBankAmt + (wagerAmt * 2.5))
+            setMessage(`Player hit blackjack and wins $${wagerAmt * 2.5}!`)
             return
         }
 
-        if (dealerScore?.total === 21 && playerScore !== 21) {
-            setMessage(`Dealer hit blackjack, player loses $${currWager}.`)
+        if (dealerScore?.total === 21 && playerScore?.total !== 21) {
+            setMessage(`Dealer hit blackjack, player loses $${wagerAmt}.`)
             return
         }
 
@@ -131,7 +134,7 @@ export default function BlackjackPage() {
             score -= 10
             aces -= 1
         }
-        return score
+        return { total: score, aces: aces }
     }
 
     function revealDealer() {
@@ -171,17 +174,23 @@ export default function BlackjackPage() {
     }
 
     function dealerHit() {
-        const deckCopy = [...deck]
-        const dCards = [...dealerCards]
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const deckCopy = [...deck]
+                const dCards = [...dealerCards]
 
-        const card = deckCopy.shift()
-        dCards.push(card)
+                const card = deckCopy.shift()
+                dCards.push(card)
 
-        const dScore = calculateScore(dCards, true, true)
+                const dScore = calculateScore(dCards, true, true)
 
-        setDealerCards([...dCards])
-        setDealerScore(dScore)
-        setDeck([...deckCopy])
+                setDealerCards([...dCards])
+                setDealerScore(dScore)
+                setDeck([...deckCopy])
+
+                resolve(dScore)
+            }, 1000)
+        })
     }
 
     function dealerAction() {

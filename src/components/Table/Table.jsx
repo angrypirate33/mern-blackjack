@@ -27,7 +27,7 @@ export default function Table({
                     <ScoreDisplay
                         className='DealerScore'
                         title="Dealer's Score"
-                        score={dealerScore}
+                        score={dealerScore?.total}
                     />
                 </div>
                 <div className='col s12 m9'>
@@ -56,7 +56,7 @@ export default function Table({
                     <ScoreDisplay
                         className='PlayerScore'
                         title="Player's Score"
-                        score={playerScore}
+                        score={playerScore?.total}
                     />
                 </div>
                 <div className='col s12 m9'>
