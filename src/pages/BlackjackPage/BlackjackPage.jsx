@@ -41,8 +41,8 @@ export default function BlackjackPage() {
                             score = newScore.total
                 }
                 if (score > 21) {
-                    setBankAmt((prevBankAmt) => prevBankAmt + currWager * 2)
-                    setMessage(`Dealer busts, player wins $${currWager * 2}!`)
+                    setBankAmt((prevBankAmt) => prevBankAmt + (currWager * 2))
+                    setMessage(`Dealer busts, player wins $${currWager}!`)
                 } else {
                     if (score === playerScore.total) {
                         setBankAmt((prevBankAmt) => prevBankAmt + currWager)
@@ -106,7 +106,7 @@ export default function BlackjackPage() {
 
         if (playerScore?.total === 21 && dealerScore?.total !== 21) {
             setBankAmt((prevBankAmt) => prevBankAmt + (wagerAmt * 2.5))
-            setMessage(`Player hit blackjack and wins $${wagerAmt * 2.5}!`)
+            setMessage(`Player hit blackjack and wins $${wagerAmt * 1.5}!`)
             return
         }
 
