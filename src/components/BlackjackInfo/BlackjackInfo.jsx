@@ -16,9 +16,9 @@ export default function BlackjackInfo({ rulesVisible, setRulesVisible }) {
                             <ul id='rulesDetail'>
                                 <li>Min bet - $10 Max Bet - $1,000.</li>
                                 <li>Ten deck shoe.</li>
-                                <li>Dealer hits on 16 and stays on 17+.</li>
+                                <li>Dealer hits on 16 and stands on 17+.</li>
                                 <li>Blackjack pays 3:2.</li>
-                                <li>Number cards - face value, face cards - 10, Aces - 11</li>
+                                <li>Number cards - face value. Face cards - 10. Aces - 1 or 11.</li>
                                 <li>Splitting hands is not allowed at this time.</li>
                                 <li>Insurance is not available.</li>
                             </ul>
