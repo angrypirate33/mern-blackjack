@@ -84,7 +84,14 @@ export default function BlackjackPage() {
                             if (i === 3) {
                                 dScore = calculateScore(updatedDealerCards, true, false)
                                 setDealerScore(dScore)
-                                setMessage("Player's Action")
+
+                                const dealerUpcard = updatedDealerCards[1]
+                                if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === 21) {
+                                    setDealerRevealed(true)
+                                    setMessage(`Dealer hit blackjack, player loses $${currWager}`)
+                                } else {
+                                    setMessage("Player's Action")
+                                }
                             }
                             return updatedDealerCards
                         })     
@@ -92,7 +99,12 @@ export default function BlackjackPage() {
                     setDeck([...deckCopy])
 
                     if (i === 3) {
-                        resolve ({ playerScore: pScore, dealerScore: dScore })
+                        resolve ({ 
+                            playerScore: pScore, 
+                            dealerScore: dScore,
+                            playerBlackjack: pScore.total === 21,
+                            dealerBlackjack: dScore.total === 21
+                        })
                     }
                 }, 1000 * (i + 1))
             }
@@ -102,17 +114,22 @@ export default function BlackjackPage() {
     async function storeAndDeal(wagerAmt) {
         resetTable()
         storeWager(wagerAmt)
-        const { playerScore, dealerScore } = await dealCards()
+        const { playerScore, dealerScore, playerBlackjack, dealerBlackjack } = await dealCards()
 
-        if (playerScore?.total === 21 && dealerScore?.total !== 21) {
+        if (playerBlackjack && !dealerBlackjack) {
             setBankAmt((prevBankAmt) => prevBankAmt + (wagerAmt * 2.5))
             setMessage(`Player hit blackjack and wins $${wagerAmt * 1.5}!`)
             return
         }
 
-        if (dealerScore?.total === 21 && playerScore?.total !== 21) {
+        if (dealerBlackjack && !playerBlackjack) {
             setMessage(`Dealer hit blackjack, player loses $${wagerAmt}.`)
             return
+        }
+
+        if (playerBlackjack && dealerBlackjack) {
+            setBankAmt((prevBankAmt) => prevBankAmt + wagerAmt)
+            setMessage(`Both player and dealer hit blackjack, it's a push. $${wagerAmt} has been returned to the player's bankroll.`)
         }
 
     }
@@ -215,6 +232,9 @@ export default function BlackjackPage() {
                 rulesVisible={rulesVisible}
                 setRulesVisible={setRulesVisible}
             />
+            <MessageCenter
+                message={message}
+            />
             <Table 
                 currWager={currWager}
                 bankAmt={bankAmt}
@@ -228,9 +248,6 @@ export default function BlackjackPage() {
                 dealerRevealed={dealerRevealed}
                 playerHit={playerHit}
                 playerStand={playerStand}
-            />
-            <MessageCenter
-                message={message}
             />
         </div>
     )
