@@ -170,7 +170,7 @@ export default function BlackjackPage() {
         if (turn === 'player') {
             setTurn('dealer')
             setMessage("Dealer's Action")
-            setDealerRevealed(true)
+            revealDealer()
             setTimeout(dealerAction, 1000)
         }
     }
