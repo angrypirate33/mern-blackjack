@@ -7,8 +7,7 @@ import '../../pages/BlackjackPage/BlackjackPage.css'
 
 export default function BlackjackPage() {
 
-    const [currWager, setCurrWager] = useState(0)
-    const [bankAmt, setBankAmt] = useState(1000)
+    const [bankState, setBankState] = useState({ bankAmt: 1000, wager: 0 })
     const [playerCards, setPlayerCards] = useState([])
     const [dealerCards, setDealerCards] = useState([])
     const [rulesVisible, setRulesVisible] = useState(false)
@@ -26,9 +25,8 @@ export default function BlackjackPage() {
     }, [])
 
     function storeWager(wagerAmt) {
-        if (wagerAmt <= bankAmt) {
-            setCurrWager(wagerAmt)
-            setBankAmt((prevBankAmt) => prevBankAmt - wagerAmt)
+        if (wagerAmt <= bankState.bankAmt) {
+            setBankState(prevState => ({ ...prevState, wager: wagerAmt, bankAmt: prevState.bankAmt - wagerAmt }))
         }
     }
 
@@ -41,17 +39,17 @@ export default function BlackjackPage() {
                             score = newScore.total
                 }
                 if (score > 21) {
-                    setBankAmt((prevBankAmt) => prevBankAmt + (currWager * 2))
-                    setMessage(`Dealer busts, player wins $${currWager}!`)
+                    setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + (prevState.wager * 2) }))
+                    setMessage(`Dealer busts, player wins $${bankState.wager}!`)
                 } else {
                     if (score === playerScore.total) {
-                        setBankAmt((prevBankAmt) => prevBankAmt + currWager)
-                        setMessage(`Push, $${currWager} has been returned to the player's bankroll.`)
+                        setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + prevState.wager }))
+                        setMessage(`Push, $${bankState.wager} has been returned to the player's bankroll.`)
                     } else if (score < playerScore.total) {
-                        setBankAmt((prevBankAmt) => prevBankAmt + currWager * 2)
-                        setMessage(`Player wins $${currWager}!`)
+                        setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + (prevState.wager * 2) }))
+                        setMessage(`Player wins $${bankState.wager}!`)
                     } else {
-                        setMessage(`Dealer wins, player loses $${currWager}.`)
+                        setMessage(`Dealer wins, player loses $${bankState.wager}.`)
                     }
                 }
             }
@@ -88,7 +86,7 @@ export default function BlackjackPage() {
                                 const dealerUpcard = updatedDealerCards[1]
                                 if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === 21) {
                                     setDealerRevealed(true)
-                                    setMessage(`Dealer hit blackjack, player loses $${currWager}`)
+                                    setMessage(`Dealer hit blackjack, player loses $${bankState.wager}`)
                                 } else {
                                     setMessage("Player's Action")
                                 }
@@ -117,7 +115,7 @@ export default function BlackjackPage() {
         const { playerScore, dealerScore, playerBlackjack, dealerBlackjack } = await dealCards()
 
         if (playerBlackjack && !dealerBlackjack) {
-            setBankAmt((prevBankAmt) => prevBankAmt + (wagerAmt * 2.5))
+            setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + (prevState.wager * 2.5) }))
             setMessage(`Player hit blackjack and wins $${wagerAmt * 1.5}!`)
             return
         }
@@ -128,7 +126,7 @@ export default function BlackjackPage() {
         }
 
         if (playerBlackjack && dealerBlackjack) {
-            setBankAmt((prevBankAmt) => prevBankAmt + wagerAmt)
+            setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + prevState.wager }))
             setMessage(`Both player and dealer hit blackjack, it's a push. $${wagerAmt} has been returned to the player's bankroll.`)
         }
 
@@ -223,7 +221,7 @@ export default function BlackjackPage() {
             setPlayerScore(null)
             setDealerRevealed(false)
             setTurn('player')
-            setCurrWager(0)
+            setBankState(prevBankState => ({ ...prevBankState, wager: 0 }))
     }
 
     return (
@@ -236,8 +234,8 @@ export default function BlackjackPage() {
                 message={message}
             />
             <Table 
-                currWager={currWager}
-                bankAmt={bankAmt}
+                currWager={bankState.wager}
+                bankAmt={bankState.bankAmt}
                 playerCards={playerCards} 
                 dealerCards={dealerCards}
                 dealerScore={dealerScore}
