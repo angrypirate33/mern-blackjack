@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useReducer } from 'react'
 import { buildOriginalDeck, getNewShuffledDeck } from '../../utilities/deck'
 import BlackjackInfo from '../../components/BlackjackInfo/BlackjackInfo'
 import Table from '../../components/Table/Table'
@@ -7,127 +7,293 @@ import '../../pages/BlackjackPage/BlackjackPage.css'
 
 export default function BlackjackPage() {
 
-    const [bankState, setBankState] = useState({ bankAmt: 1000, wager: 0 })
-    const [playerCards, setPlayerCards] = useState([])
-    const [dealerCards, setDealerCards] = useState([])
-    const [rulesVisible, setRulesVisible] = useState(false)
-    const [dealerScore, setDealerScore] = useState(null)
-    const [playerScore, setPlayerScore] = useState(null)
-    const [deck, setDeck] = useState([])
-    const [dealerRevealed, setDealerRevealed] = useState(false)
-    const [turn, setTurn] = useState('player')
-    const [message, setMessage] = useState('')
+    const initialState = {
+        bankState: { bankAmt: 1000, wager: 0},
+        playerCards: [],
+        dealerCards: [],
+        rulesVisible: false,
+        dealerScore: null,
+        playerScore: null,
+        deck: [],
+        dealerRevealed: false,
+        turn: 'player',
+        message: ''
+    }
+
+    function bjReducer(state, action) {
+        switch (action.type) {
+            case 'SET_DECK':
+                return {
+                    ...state,
+                    deck: action.payload
+                }
+            case 'STORE_WAGER':
+                const wagerAmt = action.payload
+                if (wagerAmt <= state.bankState.bankAmt) {
+                    return {
+                        ...state,
+                        bankState: {
+                            ...state.bankState,
+                            wager: wagerAmt,
+                            bankAmt: state.bankState.bankAmt - wagerAmt
+                        }
+                    }
+                } else {
+                    return state
+                }
+            case 'DEAL_CARDS_START':
+                return {
+                    ...state,
+                    message: 'Deaing Cards...'
+                } 
+            case 'SET_PLAYER_CARDS':
+                return {
+                    ...state,
+                    playerCards: action.payload.cards,
+                    playerScore: action.payload.score
+                }
+            case 'SET_DEALER_CARDS':
+                return {
+                    ...state,
+                    dealerCards: action.payload.cards,
+                    dealerScore: action.payload.score,
+                    dealerRevealed: action.payload.revealed,
+                    message: action.payload.message
+                }
+            case 'DEAL_CARDS_SUCCESS':
+                return {
+                    ...state,
+                    playerScore: action.payload.playerScore,
+                    dealerScore: action.payload.dealerScore,
+                    playerBlackjack: action.payload.playerBlackjack,
+                    dealerBlackjack: action.payload.dealerBlackjack
+                }
+            case 'PLAYER_HIT':
+                const newCard = state.deck[0]
+                const newDeck = state.deck.slice(1)
+                const newPlayerCards = [...state.playerCards, newCard]
+                const newScore = calculateScore(newPlayerCards, false, false)
+                return {
+                    ...state,
+                    playerCards: newPlayerCards,
+                    deck: newDeck,
+                    turn: newScore.total > 21 ? 'dealer' : 'player'
+                }
+            case 'PLAYER_STAND':
+                return {
+                    ...state,
+                    turn: 'dealer',
+                    dealerRevealed: true
+                }
+            case 'DEALER_TURN':
+                //
+            case 'DEALER_HIT':
+                return {
+                    ...state,
+                    dealerCards: action.payload.dealerCards,
+                    deck: action.payload.deck,
+                    dealerScore: action.payload.dealerScore
+                }
+            case 'DEALER_STAND':
+                //
+            case 'CALCULATE_SCORE':
+                //
+            case 'UPDATE_MESSAGE':
+                return {
+                    ...state,
+                    message: action.payload
+                }
+            case 'UPDATE_BANK_STATE':
+                return {
+                    ...state,
+                    bankState: action.payload
+                }
+            case 'PLAYER_BLACKJACK':
+                return {
+                    ...state,
+                    message: `Player hit blackjack and wins $${state.bankState.wager} * 1.5!`,
+                    bankState: {
+                        ...state.bankState,
+                        bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2.5)
+                    }
+                }
+            case 'DEALER_BLACKJACK':
+                return {
+                    ...state,
+                    message: `Dealer hit blackjack, player loses $${state.bankState.wager}.`
+                }
+            case 'PUSH_BLACKJACK':
+                return {
+                    ...state,
+                    message: `Both player and dealer hit blackjack, $${state.bankState.wager} has been returned to the player's bankroll.`,
+                    bankState: {
+                        ...state.bankState,
+                        bankAmt: state.bankState.bankAmt + state.bankState.wager
+                    }
+                }
+            case 'DEALER_BUSTS':
+                return {
+                    ...state,
+                    message: `Dealer busts, player wins $${state.bankState.wager}`,
+                    bankState: {
+                        ...state.bankState,
+                        bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2)
+                    }
+                }
+            case 'PUSH':
+                return {
+                    ...state,
+                    message: `It's a push, $${state.bankState.wager} has been returned to the player's bankroll.`,
+                    bankState: {
+                        ...state.bankState,
+                        bankAmt: state.bankState.bankAmt + state.bankState.wager
+                    }
+                }
+            case 'PLAYER_WINS':
+                return {
+                    ...state,
+                    message: `Player wins $${state.bankState.wager}!`,
+                    bankState: {
+                        ...state.bankState,
+                        bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2)
+                    }
+                }
+            case 'DEALER_WINS':
+                return {
+                    ...state,
+                    message: `Dealer wins, player loses $${state.bankState.wager}`
+                }
+            case 'RESET_TABLE':
+                return {
+                    ...state,
+                    playerCards: [],
+                    dealerCards: [],
+                    playerScore: null,
+                    dealerScore: null,
+                    dealerRevealed: false,
+                    turn: 'player',
+                    bankState: { ...state.bankState, wager: 0 }
+                }
+            default:
+                throw new Error(`Unhandled action type: ${action.type}`)
+        }
+    }
+
+    const [state, dispatch] = useReducer(bjReducer, initialState)
 
     useEffect(() => {
         const originalDeck = buildOriginalDeck()
         const shuffledDeck = getNewShuffledDeck(originalDeck)
-        setDeck(shuffledDeck)
+        dispatch({ type: 'SET_DECK', payload: shuffledDeck })
     }, [])
 
     function storeWager(wagerAmt) {
-        if (wagerAmt <= bankState.bankAmt) {
-            setBankState(prevState => ({ ...prevState, wager: wagerAmt, bankAmt: prevState.bankAmt - wagerAmt }))
-        }
+        dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
     }
 
     useEffect(() => {
         async function dealerTurn() {
-            if (turn === 'dealer' && playerScore.total < 21) {
-                let score = dealerScore.total
+            if (state.turn === 'dealer' && state.playerScore.total < 21) {
+                let score = state.dealerScore.total
                 while (score <= 16) {
-                            const newScore = dealerHit()
-                            score = newScore.total
+                    const newScore = await dealerHit()
+                    score = newScore.total
                 }
                 if (score > 21) {
-                    setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + (prevState.wager * 2) }))
-                    setMessage(`Dealer busts, player wins $${bankState.wager}!`)
+                    dispatch({ type: 'DEALER_BUSTS' })
                 } else {
-                    if (score === playerScore.total) {
-                        setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + prevState.wager }))
-                        setMessage(`Push, $${bankState.wager} has been returned to the player's bankroll.`)
+                    if (score === state.playerScore.total) {
+                        dispatch({ type: 'PUSH' })
                     } else if (score < playerScore.total) {
-                        setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + (prevState.wager * 2) }))
-                        setMessage(`Player wins $${bankState.wager}!`)
+                        dispatch({ type: 'PLAYER_WINS' })
                     } else {
-                        setMessage(`Dealer wins, player loses $${bankState.wager}.`)
+                        dispatch({ type: 'DEALER_WINS' })
                     }
                 }
             }
         }
         dealerTurn()
-    }, [turn, dealerScore, playerScore])
+    }, [state.turn, state.dealerScore, state.playerScore])
 
-    async function dealCards() {
-        return new Promise(resolve => {
-            setMessage('Dealing Cards')
-            const deckCopy = [...deck]
-            let pScore = { total: 0, aces: 0 }
-            let dScore = { total: 0, aces: 0 }
-            let dFullScore = { total: 0, aces: 0 }
+    function dealCards() {
+        dispatch({ type: 'DEAL_CARDS_START' })
+        const deckCopy = [...state.deck]
+        let pScore = { total: 0, aces: 0 }
+        let dScore = { total: 0, aces: 0 }
+        let dFullScore = { total: 0, aces: 0 }
 
-            for (let i = 0; i < 4; i++) {
-                setTimeout(() => {
-                    const card = deckCopy.shift()
-                    if (i % 2 === 0) {
-                        setPlayerCards((prevPlayerCards) => {
-                            const updatedPlayerCards = [...prevPlayerCards, card]
-                            pScore = calculateScore(updatedPlayerCards, false, false)
-                            setPlayerScore(pScore)
-                            return updatedPlayerCards
-                        })
-                    } else {
-                        setDealerCards((prevDealerCards) => {
-                            const updatedDealerCards = [...prevDealerCards, card]
-                            dFullScore = calculateScore(updatedDealerCards, true, true)
-                            if (i === 3) {
-                                dScore = calculateScore(updatedDealerCards, true, false)
-                                setDealerScore(dScore)
-
-                                const dealerUpcard = updatedDealerCards[1]
-                                if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === 21) {
-                                    setDealerRevealed(true)
-                                    setMessage(`Dealer hit blackjack, player loses $${bankState.wager}`)
-                                } else {
-                                    setMessage("Player's Action")
-                                }
-                            }
-                            return updatedDealerCards
-                        })     
-                    }
-                    setDeck([...deckCopy])
-
+        for (let i = 0; i < 4; i++) {
+            setTimeout(() => {
+                const card = deckCopy.shift()
+                if (i % 2 === 0) {
+                    const updatedPlayerCards = [...state.playerCards, card]
+                    pScore = calculateScore(updatedPlayerCards, false, false)
+                    dispatch({ type: 'SET_PLAYER_CARDS', payload: { cards: updatedPlayerCards, score: pScore } })
+                } else {
+                    const updatedDealerCards = [...state.dealerCards, card]
+                    dFullScore = calculateScore(updatedDealerCards, true, true)
                     if (i === 3) {
-                        resolve ({ 
+                        dScore = calculateScore(updatedDealerCards, true, false)
+                        const dealerUpcard = updatedDealerCards[1]
+                        if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === 21) {
+                            dispatch({ 
+                                type: 'SET_DEALER_CARDS', 
+                                payload: { 
+                                    cards: updatedDealerCards, 
+                                    score: dScore, 
+                                    revealed: true, 
+                                    message: `Dealer hit blackjack, player loses $${state.bankState.wager}`
+                                }
+                            })
+                        } else {
+                            dispatch({ 
+                                type: 'SET_DEALER_CARDS', 
+                                payload: { 
+                                    cards: updatedDealerCards, 
+                                    score: dScore, 
+                                    revealed: false, 
+                                    message: "Player's Action" 
+                                }
+                            })
+                        }
+                    }   
+                }
+                    dispatch({ type: 'SET_DECK', payload: deckCopy })
+
+                if (i === 3) {
+                    dispatch({ 
+                        type: 'DEAL_CARDS_SUCCESS', 
+                        payload: { 
                             playerScore: pScore, 
-                            dealerScore: dScore,
-                            playerBlackjack: pScore.total === 21,
-                            dealerBlackjack: dScore.total === 21
-                        })
-                    }
-                }, 1000 * (i + 1))
-            }
-        })
+                            dealerScore: dScore, 
+                            playerBlackjack: pScore.total === 21, 
+                            dealerBlackjack: dScore.total === 21 
+                        }
+                    })
+                }
+            }, 1000 * (i + 1))
+        }
     }
+    
 
     async function storeAndDeal(wagerAmt) {
-        resetTable()
-        storeWager(wagerAmt)
+        dispatch({ type: 'RESET_TABLE' })
+        dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
         const { playerScore, dealerScore, playerBlackjack, dealerBlackjack } = await dealCards()
+        dispatch({ type: 'DEAL_CARDS', payload: { playerScore, dealerScore, playerBlackjack, dealerBlackjack }})
 
         if (playerBlackjack && !dealerBlackjack) {
-            setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + (prevState.wager * 2.5) }))
-            setMessage(`Player hit blackjack and wins $${wagerAmt * 1.5}!`)
+            dispatch({ type: 'PLAYER_BLACKJACK' })
             return
         }
 
         if (dealerBlackjack && !playerBlackjack) {
-            setMessage(`Dealer hit blackjack, player loses $${wagerAmt}.`)
+            dispatch({ type: 'DEALER_BLACKJACK' })
             return
         }
 
         if (playerBlackjack && dealerBlackjack) {
-            setBankState(prevState => ({ ...prevState, bankAmt: prevState.bankAmt + prevState.wager }))
-            setMessage(`Both player and dealer hit blackjack, it's a push. $${wagerAmt} has been returned to the player's bankroll.`)
+            dispatch({ type: 'PUSH_BLACKJACK' })
         }
 
     }
@@ -154,74 +320,45 @@ export default function BlackjackPage() {
         return { total: score, aces: aces }
     }
 
-    function revealDealer() {
-        setDealerRevealed(true)
-        setDealerScore(calculateScore(dealerCards, true, true))
-    }
-
     function playerHit() {
-        if (turn === 'dealer') {
-            return
-        }
-        const deckCopy = [...deck]
-        const pCards = [...playerCards]
-
-        const card = deckCopy.shift()
-        pCards.push(card)
-
-        const pScore = calculateScore(pCards, false, false)
-
-        setPlayerCards([...pCards])
-        setPlayerScore(pScore)
-        setDeck([...deckCopy])
-
-        if (pScore.total > 21) {
-            setTurn('dealer')
-            setMessage('Player has busted, dealer wins.')
-        }
+        dispatch({ type: 'PLAYER_HIT' })       
+        const newScore = calculateScore([...state.playerCards, state.deck[0], false, false])
+        const message = newScore.total > 21 ? 'Player has busted, dealer wins.' : "Player's Action"
     }
 
     function playerStand() {
         if (turn === 'player') {
-            setTurn('dealer')
-            setMessage("Dealer's Action")
-            revealDealer()
-            setTimeout(dealerAction, 1000)
+            dispatch({ type: 'PLAYER_STAND' })
+            dispatch({ type: 'UPDATE_MESSAGE', payload: "Dealer's Action" })
+            setTimeout(() => dispatch({ type: 'DEALER_TURN' }), 1000)
         }
     }
 
     function dealerHit() {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                const deckCopy = [...deck]
-                const dCards = [...dealerCards]
+                const newCard = state.deck[0]
+                const newDeck = state.deck.slice(1)
+                const newDealerCards = [...state.dealerCards, newCard]
+                const newScore = calculateScore(newDealerCards, true, true)
 
-                const card = deckCopy.shift()
-                dCards.push(card)
-
-                const dScore = calculateScore(dCards, true, true)
-
-                setDealerCards([...dCards])
-                setDealerScore(dScore)
-                setDeck([...deckCopy])
+                dispatch({
+                    type: 'DEALER_HIT',
+                    payload: {
+                        dealerCards: newDealerCards,
+                        deck: newDeck,
+                        dealerScore: newScore
+                    }
+                })
 
                 resolve(dScore)
+
             }, 1000)
         })
     }
 
-    function dealerAction() {
-        dealerHit()
-    }
-
     function resetTable() {
-            setPlayerCards([])
-            setDealerCards([])
-            setDealerScore(null)
-            setPlayerScore(null)
-            setDealerRevealed(false)
-            setTurn('player')
-            setBankState(prevBankState => ({ ...prevBankState, wager: 0 }))
+        dispatch({ type: 'RESET_TABLE' })
     }
 
     return (
@@ -234,18 +371,17 @@ export default function BlackjackPage() {
                 message={message}
             />
             <Table 
-                currWager={bankState.wager}
-                bankAmt={bankState.bankAmt}
-                playerCards={playerCards} 
-                dealerCards={dealerCards}
-                dealerScore={dealerScore}
-                setDealerScore={setDealerScore}
+                currWager={state.bankState.wager}
+                bankAmt={state.bankState.bankAmt}
+                playerCards={state.playerCards} 
+                dealerCards={state.dealerCards}
+                dealerScore={state.dealerScore}
                 playerScore={playerScore}
-                setPlayerScore={setPlayerScore}
                 storeAndDeal={storeAndDeal}
-                dealerRevealed={dealerRevealed}
+                dealerRevealed={state.dealerRevealed}
                 playerHit={playerHit}
                 playerStand={playerStand}
+                dispatch={dispatch}
             />
         </div>
     )
