@@ -8,7 +8,19 @@ import WagerInfo from '../WagerInfo/WagerInfo'
 import '../CardLibrary/css/cardstarter.min.css'
 import './Table.css'
 
-export default function Table({ state, dispatch }) {
+export default function Table({ 
+    currWager,
+    bankAmt,
+    playerCards,
+    dealerCards,
+    playerScore,
+    dealerScore,
+    storeAndDeal,
+    dealerRevealed,
+    playerHit,
+    playerStand,
+    dispatch 
+}) {
     return (
         <div className='Table'>
             <div className='row'>
@@ -16,13 +28,13 @@ export default function Table({ state, dispatch }) {
                     <ScoreDisplay
                         className='DealerScore'
                         title="Dealer's Score"
-                        score={state.dealerScore?.total}
+                        score={dealerScore}
                     />
                 </div>
                 <div className='col s12 m9'>
                     <DealerCards
-                        cards={state.dealerCards}
-                        dealerRevealed={state.dealerRevealed}
+                        cards={dealerCards}
+                        dealerRevealed={dealerRevealed}
                     />
                 </div>
             </div>
@@ -36,7 +48,7 @@ export default function Table({ state, dispatch }) {
                 <div className='row'>
                     <div className='col s12'>
                         <BankrollInfo 
-                            amount={state.bankState.bankAmt}
+                            amount={bankAmt}
                         />
                     </div>
                 </div>
@@ -45,12 +57,12 @@ export default function Table({ state, dispatch }) {
                     <ScoreDisplay
                         className='PlayerScore'
                         title="Player's Score"
-                        score={state.playerScore?.total}
+                        score={playerScore?.total}
                     />
                 </div>
                 <div className='col s12 m9'>
                     <PlayerCards
-                        cards={state.playerCards}
+                        cards={playerCards}
                         dispatch={dispatch}
                     />
                 </div>

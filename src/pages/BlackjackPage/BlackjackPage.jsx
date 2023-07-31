@@ -282,7 +282,7 @@ export default function BlackjackPage() {
     async function storeAndDeal(wagerAmt) {
         dispatch({ type: 'RESET_TABLE' })
         dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
-        const { playerScore, dealerScore, playerBlackjack, dealerBlackjack } = await dealCards()
+        const { playerScore, dealerScore, playerBlackjack, dealerBlackjack } = dealCards()
         dispatch({ type: 'DEAL_CARDS', payload: { playerScore, dealerScore, playerBlackjack, dealerBlackjack }})
 
         if (playerBlackjack && !dealerBlackjack) {
