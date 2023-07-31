@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { BlackjackContext } from '../../utilities/BlackjackContext'
 import './WagerInfo.css'
 
-export default function WagerInfo({ storeAndDeal }) {
+export default function WagerInfo() {
 
     const [wagerAmount, setWagerAmount] = useState(10)
-
+    const { dispatch } = useContext(BlackjackContext)
+    
     const handleChange = (event) => {
         setWagerAmount(event.target.value)
     }

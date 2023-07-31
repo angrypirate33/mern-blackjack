@@ -1,11 +1,14 @@
-import { useState, useEffect, useReducer } from 'react'
+import { useState, useEffect, useReducer, useContext } from 'react'
 import { buildOriginalDeck, getNewShuffledDeck } from '../../utilities/deck'
 import BlackjackInfo from '../../components/BlackjackInfo/BlackjackInfo'
+import { BlackjackContext } from '../../utilities/BlackjackContext'
 import Table from '../../components/Table/Table'
 import MessageCenter from '../../components/MessageCenter/MessageCenter'
 import '../../pages/BlackjackPage/BlackjackPage.css'
 
 export default function BlackjackPage() {
+
+    const [rulesVisible, setRulesVisible] = useState(false)
 
     const initialState = {
         bankState: { bankAmt: 1000, wager: 0},
@@ -204,7 +207,7 @@ export default function BlackjackPage() {
                 } else {
                     if (score === state.playerScore.total) {
                         dispatch({ type: 'PUSH' })
-                    } else if (score < playerScore.total) {
+                    } else if (score < state.playerScore.total) {
                         dispatch({ type: 'PLAYER_WINS' })
                     } else {
                         dispatch({ type: 'DEALER_WINS' })
@@ -327,7 +330,7 @@ export default function BlackjackPage() {
     }
 
     function playerStand() {
-        if (turn === 'player') {
+        if (state.turn === 'player') {
             dispatch({ type: 'PLAYER_STAND' })
             dispatch({ type: 'UPDATE_MESSAGE', payload: "Dealer's Action" })
             setTimeout(() => dispatch({ type: 'DEALER_TURN' }), 1000)
@@ -351,7 +354,7 @@ export default function BlackjackPage() {
                     }
                 })
 
-                resolve(dScore)
+                resolve(state.dScore)
 
             }, 1000)
         })
@@ -363,26 +366,28 @@ export default function BlackjackPage() {
 
     return (
         <div className='BlackjackPage'>
-            <BlackjackInfo 
-                rulesVisible={rulesVisible}
-                setRulesVisible={setRulesVisible}
-            />
-            <MessageCenter
-                message={message}
-            />
-            <Table 
-                currWager={state.bankState.wager}
-                bankAmt={state.bankState.bankAmt}
-                playerCards={state.playerCards} 
-                dealerCards={state.dealerCards}
-                dealerScore={state.dealerScore}
-                playerScore={playerScore}
-                storeAndDeal={storeAndDeal}
-                dealerRevealed={state.dealerRevealed}
-                playerHit={playerHit}
-                playerStand={playerStand}
-                dispatch={dispatch}
-            />
+            <BlackjackContext.Provider value={{state, dispatch}}>
+                <BlackjackInfo
+                    rulesVisible={rulesVisible}
+                    setRulesVisible={setRulesVisible}
+                />
+                <MessageCenter
+                    message={state.message}
+                />
+                <Table
+                    currWager={state.bankState.wager}
+                    bankAmt={state.bankState.bankAmt}
+                    playerCards={state.playerCards}
+                    dealerCards={state.dealerCards}
+                    dealerScore={state.dealerScore}
+                    playerScore={state.playerScore}
+                    storeAndDeal={storeAndDeal}
+                    dealerRevealed={state.dealerRevealed}
+                    playerHit={playerHit}
+                    playerStand={playerStand}
+                    dispatch={dispatch}
+                />
+            </BlackjackContext.Provider>
         </div>
     )
 }

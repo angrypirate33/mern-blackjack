@@ -8,18 +8,7 @@ import WagerInfo from '../WagerInfo/WagerInfo'
 import '../CardLibrary/css/cardstarter.min.css'
 import './Table.css'
 
-export default function Table({ 
-                            currWager, 
-                            bankAmt, 
-                            playerCards, 
-                            dealerCards, 
-                            dealerScore, 
-                            playerScore, 
-                            storeAndDeal, 
-                            dealerRevealed,
-                            playerHit,
-                            playerStand
-                        }) {
+export default function Table({ state, dispatch }) {
     return (
         <div className='Table'>
             <div className='row'>
@@ -27,27 +16,27 @@ export default function Table({
                     <ScoreDisplay
                         className='DealerScore'
                         title="Dealer's Score"
-                        score={dealerScore?.total}
+                        score={state.dealerScore?.total}
                     />
                 </div>
                 <div className='col s12 m9'>
                     <DealerCards
-                        cards={dealerCards}
-                        dealerRevealed={dealerRevealed}
+                        cards={state.dealerCards}
+                        dealerRevealed={state.dealerRevealed}
                     />
                 </div>
             </div>
             <div className='row'>
                 <div className='col s12'>
                     <WagerInfo 
-                        storeAndDeal={storeAndDeal}
+                        dispatch={dispatch}
                     />
                 </div>
             </div>
                 <div className='row'>
                     <div className='col s12'>
                         <BankrollInfo 
-                            amount={bankAmt}
+                            amount={state.bankState.bankAmt}
                         />
                     </div>
                 </div>
@@ -56,20 +45,20 @@ export default function Table({
                     <ScoreDisplay
                         className='PlayerScore'
                         title="Player's Score"
-                        score={playerScore?.total}
+                        score={state.playerScore?.total}
                     />
                 </div>
                 <div className='col s12 m9'>
                     <PlayerCards
-                        cards={playerCards}
+                        cards={state.playerCards}
+                        dispatch={dispatch}
                     />
                 </div>
             </div>
             <div className='row'>
                 <div className='col s12'>
                     <PlayerActions 
-                        hit={playerHit}
-                        stand={playerStand}
+                        dispatch={dispatch}
                     />
                 </div>
             </div>
