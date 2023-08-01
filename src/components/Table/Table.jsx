@@ -41,6 +41,7 @@ export default function Table({
             <div className='row'>
                 <div className='col s12'>
                     <WagerInfo 
+                        storeAndDeal={storeAndDeal}
                         dispatch={dispatch}
                     />
                 </div>
@@ -57,7 +58,7 @@ export default function Table({
                     <ScoreDisplay
                         className='PlayerScore'
                         title="Player's Score"
-                        score={playerScore?.total}
+                        score={playerScore}
                     />
                 </div>
                 <div className='col s12 m9'>
@@ -70,6 +71,8 @@ export default function Table({
             <div className='row'>
                 <div className='col s12'>
                     <PlayerActions 
+                        hit={playerHit}
+                        stand={playerStand}
                         dispatch={dispatch}
                     />
                 </div>

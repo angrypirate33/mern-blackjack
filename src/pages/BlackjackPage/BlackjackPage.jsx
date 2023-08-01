@@ -80,6 +80,7 @@ export default function BlackjackPage() {
                     ...state,
                     playerCards: newPlayerCards,
                     deck: newDeck,
+                    playerScore: newScore,
                     turn: newScore.total > 21 ? 'dealer' : 'player'
                 }
             case 'PLAYER_STAND':
@@ -218,86 +219,93 @@ export default function BlackjackPage() {
         dealerTurn()
     }, [state.turn, state.dealerScore, state.playerScore])
 
-    function dealCards() {
+    async function dealCards() {
+        
         dispatch({ type: 'DEAL_CARDS_START' })
+
         const deckCopy = [...state.deck]
         let pScore = { total: 0, aces: 0 }
         let dScore = { total: 0, aces: 0 }
         let dFullScore = { total: 0, aces: 0 }
+        let updatedPlayerCards = [...state.playerCards]
+        let updatedDealerCards = [...state.dealerCards]
 
         for (let i = 0; i < 4; i++) {
-            setTimeout(() => {
-                const card = deckCopy.shift()
-                if (i % 2 === 0) {
-                    const updatedPlayerCards = [...state.playerCards, card]
-                    pScore = calculateScore(updatedPlayerCards, false, false)
-                    dispatch({ type: 'SET_PLAYER_CARDS', payload: { cards: updatedPlayerCards, score: pScore } })
-                } else {
-                    const updatedDealerCards = [...state.dealerCards, card]
-                    dFullScore = calculateScore(updatedDealerCards, true, true)
-                    if (i === 3) {
-                        dScore = calculateScore(updatedDealerCards, true, false)
-                        const dealerUpcard = updatedDealerCards[1]
-                        if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === 21) {
-                            dispatch({ 
-                                type: 'SET_DEALER_CARDS', 
-                                payload: { 
-                                    cards: updatedDealerCards, 
-                                    score: dScore, 
-                                    revealed: true, 
-                                    message: `Dealer hit blackjack, player loses $${state.bankState.wager}`
-                                }
-                            })
-                        } else {
-                            dispatch({ 
-                                type: 'SET_DEALER_CARDS', 
-                                payload: { 
-                                    cards: updatedDealerCards, 
-                                    score: dScore, 
-                                    revealed: false, 
-                                    message: "Player's Action" 
-                                }
-                            })
-                        }
-                    }   
-                }
-                    dispatch({ type: 'SET_DECK', payload: deckCopy })
 
+            await new Promise(resolve => setTimeout(resolve, 1000))
+
+            const card = deckCopy.shift()
+            if (i % 2 === 0) {
+                updatedPlayerCards.push(card)
+                pScore = calculateScore(updatedPlayerCards, false, false)
+                dispatch({ type: 'SET_PLAYER_CARDS', payload: { cards: updatedPlayerCards, score: pScore } })
+            } else {
+                updatedDealerCards.push(card)
+                dFullScore = calculateScore(updatedDealerCards, true, true)
                 if (i === 3) {
-                    dispatch({ 
-                        type: 'DEAL_CARDS_SUCCESS', 
-                        payload: { 
-                            playerScore: pScore, 
-                            dealerScore: dScore, 
-                            playerBlackjack: pScore.total === 21, 
-                            dealerBlackjack: dScore.total === 21 
+                    dScore = calculateScore(updatedDealerCards, true, false)
+                    const dealerUpcard = updatedDealerCards[1]
+                    if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === 21) {
+                        dispatch({ 
+                            type: 'SET_DEALER_CARDS', 
+                            payload: { 
+                                cards: updatedDealerCards, 
+                                score: dScore, 
+                                revealed: true, 
+                                message: `Dealer hit blackjack, player loses $${state.bankState.wager}`
+                            }
+                        })
+                    } else {
+                        dispatch({ 
+                            type: 'SET_DEALER_CARDS', 
+                            payload: { 
+                                cards: updatedDealerCards, 
+                                score: dScore, 
+                                revealed: false, 
+                                message: "Player's Action" 
+                            }
+                        })
+                    }
+                } else {
+                    dispatch({
+                        type: 'SET_DEALER_CARDS',
+                        payload: {
+                            cards: updatedDealerCards,
+                            score: dScore,
+                            revealed: false
                         }
                     })
+                }   
+            }
+            
+            dispatch({ type: 'SET_DECK', payload: deckCopy })
+
+            if (i === 3) {
+                dispatch({ 
+                    type: 'DEAL_CARDS_SUCCESS', 
+                    payload: { 
+                        playerScore: pScore, 
+                        dealerScore: dScore, 
+                        playerBlackjack: pScore.total === 21, 
+                        dealerBlackjack: dScore.total === 21 
+                    }
+                })
+                if (pScore.total === 21 && dScore.total !== 21) {
+                    dispatch({ type: 'PLAYER_BLACKJACK' })
+                } else if (dScore.total === 21 && pScore.total !== 21) {
+                    dispatch({ type: 'DEALER_BLACKJACK' })
+                } else if (pScore.total === 21 && dScore.total === 21) {
+                    dispatch({ type: 'PUSH_BLACKJACK' })
                 }
-            }, 1000 * (i + 1))
+            }
         }
     }
     
 
-    async function storeAndDeal(wagerAmt) {
+    function storeAndDeal(wagerAmt) {
         dispatch({ type: 'RESET_TABLE' })
         dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
-        const { playerScore, dealerScore, playerBlackjack, dealerBlackjack } = dealCards()
-        dispatch({ type: 'DEAL_CARDS', payload: { playerScore, dealerScore, playerBlackjack, dealerBlackjack }})
-
-        if (playerBlackjack && !dealerBlackjack) {
-            dispatch({ type: 'PLAYER_BLACKJACK' })
-            return
-        }
-
-        if (dealerBlackjack && !playerBlackjack) {
-            dispatch({ type: 'DEALER_BLACKJACK' })
-            return
-        }
-
-        if (playerBlackjack && dealerBlackjack) {
-            dispatch({ type: 'PUSH_BLACKJACK' })
-        }
+        dealCards()
 
     }
 
@@ -324,9 +332,21 @@ export default function BlackjackPage() {
     }
 
     function playerHit() {
-        dispatch({ type: 'PLAYER_HIT' })       
-        const newScore = calculateScore([...state.playerCards, state.deck[0], false, false])
+        const newCard = state.deck[0]
+        const newDeck = state.deck.slice(1)
+        const newPlayerCards = [...state.playerCards, newCard]
+        const newScore = calculateScore(newPlayerCards, false, false)
         const message = newScore.total > 21 ? 'Player has busted, dealer wins.' : "Player's Action"
+        
+        dispatch({ 
+            type: 'PLAYER_HIT',
+            payload: {
+                playerCards: newPlayerCards,
+                deck: newDeck,
+                playerScore: newScore,
+                message: message
+            }
+        })       
     }
 
     function playerStand() {
@@ -354,7 +374,7 @@ export default function BlackjackPage() {
                     }
                 })
 
-                resolve(state.dScore)
+                resolve(newScore)
 
             }, 1000)
         })
