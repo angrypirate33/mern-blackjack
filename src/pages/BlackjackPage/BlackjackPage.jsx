@@ -271,13 +271,13 @@ export default function BlackjackPage() {
                         type: 'SET_DEALER_CARDS',
                         payload: {
                             cards: updatedDealerCards,
-                            score: dScore,
+                            // score: dScore,
                             revealed: false
                         }
                     })
                 }   
             }
-            
+
             dispatch({ type: 'SET_DECK', payload: deckCopy })
 
             if (i === 3) {
