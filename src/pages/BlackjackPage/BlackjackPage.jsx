@@ -46,7 +46,9 @@ export default function BlackjackPage() {
             case 'DEAL_CARDS_START':
                 return {
                     ...state,
-                    message: 'Deaing Cards...'
+                    message: 'Deaing Cards...',
+                    playerCards: [],
+                    dealerCards: []
                 } 
             case 'SET_PLAYER_CARDS':
                 return {
@@ -243,8 +245,8 @@ export default function BlackjackPage() {
         let pScore = { total: 0, aces: 0 }
         let dScore = { total: 0, aces: 0 }
         let dFullScore = { total: 0, aces: 0 }
-        let updatedPlayerCards = [...state.playerCards]
-        let updatedDealerCards = [...state.dealerCards]
+        let updatedPlayerCards = []
+        let updatedDealerCards = []
 
         for (let i = 0; i < 4; i++) {
 
@@ -323,7 +325,6 @@ export default function BlackjackPage() {
         dispatch({ type: 'RESET_TABLE' })
         dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
         dealCards()
-
     }
 
     function calculateScore(cards, isDealer, dealerRevealed) {
@@ -381,10 +382,6 @@ export default function BlackjackPage() {
 
             }, 1000)
         })
-    }
-
-    function resetTable() {
-        dispatch({ type: 'RESET_TABLE' })
     }
 
     return (
