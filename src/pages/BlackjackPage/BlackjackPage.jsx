@@ -14,7 +14,6 @@ export default function BlackjackPage() {
         bankState: { bankAmt: 1000, wager: 0},
         playerCards: [],
         dealerCards: [],
-        rulesVisible: false,
         dealerScore: null,
         playerScore: null,
         deck: [],
@@ -76,13 +75,20 @@ export default function BlackjackPage() {
                 const newDeck = state.deck.slice(1)
                 const newPlayerCards = [...state.playerCards, newCard]
                 const newScore = calculateScore(newPlayerCards, false, false)
-                return {
-                    ...state,
-                    playerCards: newPlayerCards,
-                    deck: newDeck,
-                    playerScore: newScore,
-                    turn: newScore.total > 21 ? 'dealer' : 'player'
+                if (newScore.total > 21) {
+                    dispatch({
+                        type: 'PLAYER_BUSTS'
+                    })
+                } else {
+                    return {
+                        ...state,
+                        playerCards: newPlayerCards,
+                        deck: newDeck,
+                        playerScore: newScore,
+                        turn: newScore.total > 21 ? 'dealer' : 'player'
+                    }
                 }
+                break
             case 'PLAYER_STAND':
                 return {
                     ...state,
@@ -126,6 +132,11 @@ export default function BlackjackPage() {
                     ...state,
                     message: `Dealer hit blackjack, player loses $${state.bankState.wager}.`
                 }
+            case 'UPDATE_DEALER_SCORE':
+                return {
+                    ...state,
+                    dealerScore: action.score
+                }
             case 'PUSH_BLACKJACK':
                 return {
                     ...state,
@@ -138,11 +149,16 @@ export default function BlackjackPage() {
             case 'DEALER_BUSTS':
                 return {
                     ...state,
-                    message: `Dealer busts, player wins $${state.bankState.wager}`,
+                    message: `Dealer busts, player wins $${state.bankState.wager}!`,
                     bankState: {
                         ...state.bankState,
                         bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2)
                     }
+                }
+            case 'PLAYER_BUSTS':
+                return {
+                    ...state,
+                    message: `Player busts and loses $${state.bankState.wager}.`
                 }
             case 'PUSH':
                 return {
@@ -294,6 +310,7 @@ export default function BlackjackPage() {
                     dispatch({ type: 'PLAYER_BLACKJACK' })
                 } else if (dScore.total === 21 && pScore.total !== 21) {
                     dispatch({ type: 'DEALER_BLACKJACK' })
+                    dispatch({ type: 'UPDATE_DEALER_SCORE', score: 21 })
                 } else if (pScore.total === 21 && dScore.total === 21) {
                     dispatch({ type: 'PUSH_BLACKJACK' })
                 }
