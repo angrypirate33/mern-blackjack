@@ -75,20 +75,14 @@ export default function BlackjackPage() {
                 const newDeck = state.deck.slice(1)
                 const newPlayerCards = [...state.playerCards, newCard]
                 const newScore = calculateScore(newPlayerCards, false, false)
-                if (newScore.total > 21) {
-                    dispatch({
-                        type: 'PLAYER_BUSTS'
-                    })
-                } else {
-                    return {
-                        ...state,
-                        playerCards: newPlayerCards,
-                        deck: newDeck,
-                        playerScore: newScore,
-                        turn: newScore.total > 21 ? 'dealer' : 'player'
-                    }
+
+                return {
+                    ...state,
+                    playerCards: newPlayerCards,
+                    deck: newDeck,
+                    playerScore: newScore,
+                    turn: newScore.total > 21 ? 'dealer' : 'player'
                 }
-                break
             case 'PLAYER_STAND':
                 return {
                     ...state,
@@ -207,10 +201,12 @@ export default function BlackjackPage() {
         dispatch({ type: 'SET_DECK', payload: shuffledDeck })
     }, [])
 
-    function storeWager(wagerAmt) {
-        dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
-    }
-
+    useEffect(() => {
+        if (state.playerScore && state.playerScore.total > 21) {
+            dispatch({ type: 'PLAYER_BUSTS' })
+        }
+    }, [state.playerScore])
+    
     useEffect(() => {
         async function dealerTurn() {
             if (state.turn === 'dealer' && state.playerScore.total < 21) {
@@ -234,6 +230,10 @@ export default function BlackjackPage() {
         }
         dealerTurn()
     }, [state.turn, state.dealerScore, state.playerScore])
+    
+    function storeWager(wagerAmt) {
+        dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
+    }
 
     async function dealCards() {
         
@@ -349,21 +349,7 @@ export default function BlackjackPage() {
     }
 
     function playerHit() {
-        const newCard = state.deck[0]
-        const newDeck = state.deck.slice(1)
-        const newPlayerCards = [...state.playerCards, newCard]
-        const newScore = calculateScore(newPlayerCards, false, false)
-        const message = newScore.total > 21 ? 'Player has busted, dealer wins.' : "Player's Action"
-        
-        dispatch({ 
-            type: 'PLAYER_HIT',
-            payload: {
-                playerCards: newPlayerCards,
-                deck: newDeck,
-                playerScore: newScore,
-                message: message
-            }
-        })       
+        dispatch({ type: 'PLAYER_HIT' })      
     }
 
     function playerStand() {
