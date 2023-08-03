@@ -92,7 +92,10 @@ export default function BlackjackPage() {
                     dealerRevealed: true
                 }
             case 'DEALER_TURN':
-                //
+                return {
+                    ...state,
+                    turn: 'dealer'
+                }
             case 'DEALER_HIT':
                 return {
                     ...state,
@@ -210,28 +213,31 @@ export default function BlackjackPage() {
     }, [state.playerScore])
     
     useEffect(() => {
-        async function dealerTurn() {
-            if (state.turn === 'dealer' && state.playerScore.total < 21) {
-                let score = state.dealerScore.total
-                while (score <= 16) {
-                    const newScore = await dealerHit()
-                    score = newScore.total
-                }
-                if (score > 21) {
-                    dispatch({ type: 'DEALER_BUSTS' })
+        if (state.turn === 'dealer') {
+            dealerTurn(dispatch, state.dealerScore, state.playerScore)
+        }
+    }, [state.turn, state.dealerScore, state.playerScore, dispatch])
+
+    async function dealerTurn() {
+        if (state.turn === 'dealer' && state.playerScore.total < 21) {
+            let score = state.dealerScore.total
+            while (score <= 16) {
+                const newScore = await dealerHit()
+                score = newScore.total
+            }
+            if (score > 21) {
+                dispatch({ type: 'DEALER_BUSTS' })
+            } else {
+                if (score === state.playerScore.total) {
+                    dispatch({ type: 'PUSH' })
+                } else if (score < state.playerScore.total) {
+                    dispatch({ type: 'PLAYER_WINS' })
                 } else {
-                    if (score === state.playerScore.total) {
-                        dispatch({ type: 'PUSH' })
-                    } else if (score < state.playerScore.total) {
-                        dispatch({ type: 'PLAYER_WINS' })
-                    } else {
-                        dispatch({ type: 'DEALER_WINS' })
-                    }
+                    dispatch({ type: 'DEALER_WINS' })
                 }
             }
         }
-        dealerTurn()
-    }, [state.turn, state.dealerScore, state.playerScore])
+    }
     
     function storeWager(wagerAmt) {
         dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
@@ -367,6 +373,7 @@ export default function BlackjackPage() {
                 const newCard = state.deck[0]
                 const newDeck = state.deck.slice(1)
                 const newDealerCards = [...state.dealerCards, newCard]
+                console.log('newDealerCards: ', newDealerCards)
                 const newScore = calculateScore(newDealerCards, true, true)
 
                 dispatch({
