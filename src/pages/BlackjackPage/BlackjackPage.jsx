@@ -9,6 +9,7 @@ import '../../pages/BlackjackPage/BlackjackPage.css'
 export default function BlackjackPage() {
 
     const [rulesVisible, setRulesVisible] = useState(false)
+    const [dealerTurnInProgress, setDealerTurnInProgress] = useState(false)
 
     const initialState = {
         bankState: { bankAmt: 1000, wager: 0},
@@ -213,10 +214,11 @@ export default function BlackjackPage() {
     }, [state.playerScore])
     
     useEffect(() => {
-        if (state.turn === 'dealer') {
-            dealerTurn(dispatch, state.dealerScore, state.playerScore)
+        if (state.turn === 'dealer' && !dealerTurnInProgress) {
+            setDealerTurnInProgress(true)
+            dealerTurn()
         }
-    }, [state.turn, state.dealerScore, state.playerScore, dispatch])
+    }, [state.turn, dealerTurnInProgress])
 
     async function dealerTurn() {
         if (state.turn === 'dealer' && state.playerScore.total < 21) {
@@ -236,6 +238,7 @@ export default function BlackjackPage() {
                     dispatch({ type: 'DEALER_WINS' })
                 }
             }
+            setDealerTurnInProgress(false)
         }
     }
     
@@ -367,13 +370,12 @@ export default function BlackjackPage() {
         }
     }
 
-    function dealerHit() {
+    function dealerHit(currentScore) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const newCard = state.deck[0]
                 const newDeck = state.deck.slice(1)
                 const newDealerCards = [...state.dealerCards, newCard]
-                console.log('newDealerCards: ', newDealerCards)
                 const newScore = calculateScore(newDealerCards, true, true)
 
                 dispatch({
