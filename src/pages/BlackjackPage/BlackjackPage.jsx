@@ -1,7 +1,6 @@
-import { useState, useEffect, useReducer, useContext } from 'react'
+import { useState, useEffect, useReducer } from 'react'
 import { buildOriginalDeck, getNewShuffledDeck } from '../../utilities/deck'
 import BlackjackInfo from '../../components/BlackjackInfo/BlackjackInfo'
-import { BlackjackContext } from '../../utilities/BlackjackContext'
 import Table from '../../components/Table/Table'
 import MessageCenter from '../../components/MessageCenter/MessageCenter'
 import '../../pages/BlackjackPage/BlackjackPage.css'
@@ -222,7 +221,7 @@ export default function BlackjackPage() {
     }, [state.turn, dealerTurnInProgress])
 
     async function dealerTurn() {
-        if (state.turn === 'dealer' && state.playerScore.total < 21) {
+        if (state.turn === 'dealer' && !state.playerBlackjack) {
             let score = state.dealerScore.total
             while (score <= 16) {
                 const newScore = await dealerHit()
@@ -397,7 +396,6 @@ export default function BlackjackPage() {
 
     return (
         <div className='BlackjackPage'>
-            <BlackjackContext.Provider value={{state, dispatch}}>
                 <BlackjackInfo
                     rulesVisible={rulesVisible}
                     setRulesVisible={setRulesVisible}
@@ -418,7 +416,6 @@ export default function BlackjackPage() {
                     playerStand={playerStand}
                     dispatch={dispatch}
                 />
-            </BlackjackContext.Provider>
         </div>
     )
 }
