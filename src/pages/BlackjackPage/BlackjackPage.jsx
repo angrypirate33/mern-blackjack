@@ -121,7 +121,7 @@ export default function BlackjackPage() {
             case 'PLAYER_BLACKJACK':
                 return {
                     ...state,
-                    message: `Player hit blackjack and wins $${state.bankState.wager} * 1.5!`,
+                    message: `Player hit blackjack and wins $${state.bankState.wager * 1.5}!`,
                     bankState: {
                         ...state.bankState,
                         bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2.5)
