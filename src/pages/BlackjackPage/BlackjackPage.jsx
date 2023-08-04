@@ -20,7 +20,7 @@ export default function BlackjackPage() {
         deck: [],
         dealerRevealed: false,
         turn: 'player',
-        message: ''
+        message: 'Place Wager...'
     }
 
     function bjReducer(state, action) {
@@ -269,11 +269,12 @@ export default function BlackjackPage() {
             } else {
                 updatedDealerCards.push(card)
                 dFullScore = calculateScore(updatedDealerCards, true, true)
+                let payload
                 if (i === 3) {
                     dScore = calculateScore(updatedDealerCards, true, false)
                     const dealerUpcard = updatedDealerCards[1]
                     if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === 21) {
-                        dispatch({ 
+                        payload = { 
                             type: 'SET_DEALER_CARDS', 
                             payload: { 
                                 cards: updatedDealerCards, 
@@ -281,28 +282,26 @@ export default function BlackjackPage() {
                                 revealed: true, 
                                 message: `Dealer hit blackjack, player loses $${state.bankState.wager}`
                             }
-                        })
+                        }
                     } else {
-                        dispatch({ 
-                            type: 'SET_DEALER_CARDS', 
-                            payload: { 
-                                cards: updatedDealerCards, 
-                                score: dScore, 
-                                revealed: false, 
-                                message: "Player's Action" 
-                            }
-                        })
+                        payload = { 
+                            cards: updatedDealerCards, 
+                            score: dScore, 
+                            revealed: false, 
+                            message: "Player's Action" 
+                        }
                     }
                 } else {
-                    dispatch({
-                        type: 'SET_DEALER_CARDS',
-                        payload: {
-                            cards: updatedDealerCards,
-                            // score: dScore,
-                            revealed: false
-                        }
-                    })
-                }   
+                    payload = {
+                        cards: updatedDealerCards,
+                        revealed: false,
+                        message: 'Dealing Cards...'
+                    }
+                }  
+                dispatch({
+                    type: 'SET_DEALER_CARDS',
+                    payload: payload
+                }) 
             }
 
             dispatch({ type: 'SET_DECK', payload: deckCopy })
