@@ -92,6 +92,11 @@ export default function BlackjackPage() {
                     turn: 'dealer',
                     dealerRevealed: true
                 }
+            case 'UPDATE_DEALER_SCORE':
+                return {
+                    ...state,
+                    dealerScore: action.payload
+                }
             case 'DEALER_TURN':
                 return {
                     ...state,
@@ -104,10 +109,6 @@ export default function BlackjackPage() {
                     deck: action.payload.deck,
                     dealerScore: action.payload.dealerScore
                 }
-            case 'DEALER_STAND':
-                //
-            case 'CALCULATE_SCORE':
-                //
             case 'UPDATE_MESSAGE':
                 return {
                     ...state,
@@ -364,6 +365,8 @@ export default function BlackjackPage() {
     function playerStand() {
         if (state.turn === 'player') {
             dispatch({ type: 'PLAYER_STAND' })
+            const newDealerScore = calculateScore(state.dealerCards, true, true)
+            dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
             dispatch({ type: 'UPDATE_MESSAGE', payload: "Dealer's Action" })
             setTimeout(() => dispatch({ type: 'DEALER_TURN' }), 1000)
         }
