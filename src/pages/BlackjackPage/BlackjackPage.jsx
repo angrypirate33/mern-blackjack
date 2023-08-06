@@ -23,6 +23,7 @@ export default function BlackjackPage() {
     }
 
     function bjReducer(state, action) {
+        console.log(action)
         switch (action.type) {
             case 'SET_DECK':
                 return {
@@ -132,11 +133,6 @@ export default function BlackjackPage() {
                     ...state,
                     message: `Dealer hit blackjack, player loses $${state.bankState.wager}.`
                 }
-            case 'UPDATE_DEALER_SCORE':
-                return {
-                    ...state,
-                    dealerScore: action.score
-                }
             case 'PUSH_BLACKJACK':
                 return {
                     ...state,
@@ -229,6 +225,7 @@ export default function BlackjackPage() {
             }
             if (score > 21) {
                 dispatch({ type: 'DEALER_BUSTS' })
+                return
             } else {
                 if (score === state.playerScore.total) {
                     dispatch({ type: 'PUSH' })
