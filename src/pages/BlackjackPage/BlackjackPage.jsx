@@ -23,7 +23,6 @@ export default function BlackjackPage() {
     }
 
     function bjReducer(state, action) {
-        console.log(action)
         switch (action.type) {
             case 'SET_DECK':
                 return {
@@ -200,12 +199,17 @@ export default function BlackjackPage() {
     useEffect(() => {
         const originalDeck = buildOriginalDeck()
         const shuffledDeck = getNewShuffledDeck(originalDeck)
-        dispatch({ type: 'SET_DECK', payload: shuffledDeck })
+        dispatch({ 
+            type: 'SET_DECK', 
+            payload: shuffledDeck
+        })
     }, [])
 
     useEffect(() => {
         if (state.playerScore && state.playerScore.total > 21) {
-            dispatch({ type: 'PLAYER_BUSTS' })
+            dispatch({ 
+                type: 'PLAYER_BUSTS'
+            })
         }
     }, [state.playerScore])
     
@@ -217,31 +221,34 @@ export default function BlackjackPage() {
     }, [state.turn, dealerTurnInProgress])
 
     async function dealerTurn() {
-        if (state.turn === 'dealer' && !state.playerBlackjack && state.playerScore.total <= 21) {
-            let score = state.dealerScore.total
-            if (score > 16 && score < 21 && score > state.playerScore.total) {
-                dispatch({ type: 'DEALER_WINS' })
-                setDealerTurnInProgress(false)
-                return
-            }
-            while (score <= 16) {
-                const newScore = await dealerHit()
-                score = newScore.total
-            }
-            if (score > 21) {
-                dispatch({ type: 'DEALER_BUSTS' })
-                return
-            } else {
-                if (score === state.playerScore.total) {
-                    dispatch({ type: 'PUSH' })
-                } else if (score < state.playerScore.total) {
-                    dispatch({ type: 'PLAYER_WINS' })
-                } else {
+        try {
+            if (state.turn === 'dealer' && !state.playerBlackjack && state.playerScore.total <= 21) {
+                let score = state.dealerScore.total
+                if (score > 16 && score < 21 && score > state.playerScore.total) {
                     dispatch({ type: 'DEALER_WINS' })
+                    return
+                }
+                while (score <= 16) {
+                    const newScore = await dealerHit()
+                    score = newScore.total
+                }
+                if (score > 21) {
+                    dispatch({ type: 'DEALER_BUSTS' })
+                    return
+                } else {
+                    if (score === state.playerScore.total) {
+                        dispatch({ type: 'PUSH' })
+                        return
+                    } else if (score < state.playerScore.total) {
+                        dispatch({ type: 'PLAYER_WINS' })
+                        return
+                    } else {
+                        dispatch({ type: 'DEALER_WINS' })
+                        return
+                    }
                 }
             }
-            setDealerTurnInProgress(false)
-        } else {
+        } finally {
             setDealerTurnInProgress(false)
         }
     }
