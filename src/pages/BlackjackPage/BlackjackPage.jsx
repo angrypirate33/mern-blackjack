@@ -217,8 +217,13 @@ export default function BlackjackPage() {
     }, [state.turn, dealerTurnInProgress])
 
     async function dealerTurn() {
-        if (state.turn === 'dealer' && !state.playerBlackjack) {
+        if (state.turn === 'dealer' && !state.playerBlackjack && state.playerScore.total <= 21) {
             let score = state.dealerScore.total
+            if (score > 16 && score < 21 && score > state.playerScore.total) {
+                dispatch({ type: 'DEALER_WINS' })
+                setDealerTurnInProgress(false)
+                return
+            }
             while (score <= 16) {
                 const newScore = await dealerHit()
                 score = newScore.total
@@ -235,6 +240,8 @@ export default function BlackjackPage() {
                     dispatch({ type: 'DEALER_WINS' })
                 }
             }
+            setDealerTurnInProgress(false)
+        } else {
             setDealerTurnInProgress(false)
         }
     }
