@@ -10,6 +10,9 @@ export default function BlackjackPage() {
     const [rulesVisible, setRulesVisible] = useState(false)
     const [dealerTurnInProgress, setDealerTurnInProgress] = useState(false)
 
+    const BLACKJACK_SCORE = 21
+    const DEALER_MIN_SCORE = 16
+
     const initialState = {
         bankState: { bankAmt: 1000, wager: 0},
         playerCards: [],
@@ -23,6 +26,7 @@ export default function BlackjackPage() {
     }
 
     function bjReducer(state, action) {
+        console.log(action.type)
         switch (action.type) {
             case 'SET_DECK':
                 return {
@@ -83,7 +87,7 @@ export default function BlackjackPage() {
                     playerCards: newPlayerCards,
                     deck: newDeck,
                     playerScore: newScore,
-                    turn: newScore.total > 21 ? 'dealer' : 'player'
+                    turn: newScore.total > BLACKJACK_SCORE ? 'dealer' : 'player'
                 }
             case 'PLAYER_STAND':
                 return {
@@ -206,7 +210,7 @@ export default function BlackjackPage() {
     }, [])
 
     useEffect(() => {
-        if (state.playerScore && state.playerScore.total > 21) {
+        if (state.playerScore && state.playerScore.total > BLACKJACK_SCORE) {
             dispatch({ 
                 type: 'PLAYER_BUSTS'
             })
@@ -222,17 +226,17 @@ export default function BlackjackPage() {
 
     async function dealerTurn() {
         try {
-            if (state.turn === 'dealer' && !state.playerBlackjack && state.playerScore.total <= 21) {
+            if (state.turn === 'dealer' && !state.playerBlackjack && state.playerScore.total <= BLACKJACK_SCORE) {
                 let score = state.dealerScore.total
-                if (score > 16 && score < 21 && score > state.playerScore.total) {
+                if (score > DEALER_MIN_SCORE && score < BLACKJACK_SCORE && score > state.playerScore.total) {
                     dispatch({ type: 'DEALER_WINS' })
                     return
                 }
-                while (score <= 16) {
+                while (score <= DEALER_MIN_SCORE) {
                     const newScore = await dealerHit()
                     score = newScore.total
                 }
-                if (score > 21) {
+                if (score > BLACKJACK_SCORE) {
                     dispatch({ type: 'DEALER_BUSTS' })
                     return
                 } else {
@@ -284,7 +288,7 @@ export default function BlackjackPage() {
                 if (i === 3) {
                     dScore = calculateScore(updatedDealerCards, true, false)
                     const dealerUpcard = updatedDealerCards[1]
-                    if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === 21) {
+                    if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === BLACKJACK_SCORE) {
                         payload = { 
                             type: 'SET_DEALER_CARDS', 
                             payload: { 
@@ -323,16 +327,16 @@ export default function BlackjackPage() {
                     payload: { 
                         playerScore: pScore, 
                         dealerScore: dScore, 
-                        playerBlackjack: pScore.total === 21, 
-                        dealerBlackjack: dScore.total === 21 
+                        playerBlackjack: pScore.total === BLACKJACK_SCORE, 
+                        dealerBlackjack: dScore.total === BLACKJACK_SCORE 
                     }
                 })
-                if (pScore.total === 21 && dScore.total !== 21) {
+                if (pScore.total === BLACKJACK_SCORE && dScore.total !== BLACKJACK_SCORE) {
                     dispatch({ type: 'PLAYER_BLACKJACK' })
-                } else if (dScore.total === 21 && pScore.total !== 21) {
+                } else if (dScore.total === BLACKJACK_SCORE && pScore.total !== BLACKJACK_SCORE) {
                     dispatch({ type: 'DEALER_BLACKJACK' })
-                    dispatch({ type: 'UPDATE_DEALER_SCORE', score: 21 })
-                } else if (pScore.total === 21 && dScore.total === 21) {
+                    dispatch({ type: 'UPDATE_DEALER_SCORE', score: BLACKJACK_SCORE })
+                } else if (pScore.total === BLACKJACK_SCORE && dScore.total === BLACKJACK_SCORE) {
                     dispatch({ type: 'PUSH_BLACKJACK' })
                 }
             }
@@ -361,7 +365,7 @@ export default function BlackjackPage() {
             score += card.value
         }
 
-        while (score > 21 && aces > 0) {
+        while (score > BLACKJACK_SCORE && aces > 0) {
             score -= 10
             aces -= 1
         }
@@ -376,19 +380,30 @@ export default function BlackjackPage() {
         if (state.turn === 'player') {
             dispatch({ type: 'PLAYER_STAND' })
             const newDealerScore = calculateScore(state.dealerCards, true, true)
-            dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
-            dispatch({ type: 'UPDATE_MESSAGE', payload: "Dealer's Action" })
-            setTimeout(() => dispatch({ type: 'DEALER_TURN' }), 1000)
+
+            if (newDealerScore.total > DEALER_MIN_SCORE && newDealerScore.total <= BLACKJACK_SCORE && newDealerScore.total > state.playerScore.total) {
+                dispatch({ type: 'DEALER_WINS' })
+            } else {
+                dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
+                dispatch({ type: 'UPDATE_MESSAGE', payload: "Dealer's Action" })
+                setTimeout(() => dispatch({ type: 'DEALER_TURN' }), 1000)
+            }
         }
     }
 
-    function dealerHit(currentScore) {
+    function dealerHit() {
         return new Promise((resolve, reject) => {
+            console.log('Starting dealerHit..')
+            console.log('Current state: ', state)
             setTimeout(() => {
                 const newCard = state.deck[0]
                 const newDeck = state.deck.slice(1)
                 const newDealerCards = [...state.dealerCards, newCard]
                 const newScore = calculateScore(newDealerCards, true, true)
+
+                console.log('New Card: ', newCard)
+                console.log('New Dealer Cards: ', newDealerCards)
+                console.log('New Score: ', newScore)
 
                 dispatch({
                     type: 'DEALER_HIT',
