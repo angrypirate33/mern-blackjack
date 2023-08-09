@@ -223,39 +223,6 @@ export default function BlackjackPage() {
             dealerTurn()
         }
     }, [state.turn, dealerTurnInProgress])
-
-    async function dealerTurn() {
-        try {
-            if (state.turn === 'dealer' && !state.playerBlackjack && state.playerScore.total <= BLACKJACK_SCORE) {
-                let score = state.dealerScore.total
-                if (score > DEALER_MIN_SCORE && score < BLACKJACK_SCORE && score > state.playerScore.total) {
-                    dispatch({ type: 'DEALER_WINS' })
-                    return
-                }
-                while (score <= DEALER_MIN_SCORE) {
-                    const newScore = await dealerHit()
-                    score = newScore.total
-                }
-                if (score > BLACKJACK_SCORE) {
-                    dispatch({ type: 'DEALER_BUSTS' })
-                    return
-                } else {
-                    if (score === state.playerScore.total) {
-                        dispatch({ type: 'PUSH' })
-                        return
-                    } else if (score < state.playerScore.total) {
-                        dispatch({ type: 'PLAYER_WINS' })
-                        return
-                    } else {
-                        dispatch({ type: 'DEALER_WINS' })
-                        return
-                    }
-                }
-            }
-        } finally {
-            setDealerTurnInProgress(false)
-        }
-    }
     
     function storeWager(wagerAmt) {
         dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
@@ -391,19 +358,47 @@ export default function BlackjackPage() {
         }
     }
 
-    function dealerHit() {
-        return new Promise((resolve, reject) => {
-            console.log('Starting dealerHit..')
-            console.log('Current state: ', state)
-            setTimeout(() => {
-                const newCard = state.deck[0]
-                const newDeck = state.deck.slice(1)
-                const newDealerCards = [...state.dealerCards, newCard]
-                const newScore = calculateScore(newDealerCards, true, true)
+    async function dealerTurn() {
+        try {
+            if (state.turn === 'dealer' && !state.playerBlackjack && state.playerScore.total <= BLACKJACK_SCORE) {
+                let score = state.dealerScore.total
+                let currentState = state
+                if (score > DEALER_MIN_SCORE && score < BLACKJACK_SCORE && score > state.playerScore.total) {
+                    dispatch({ type: 'DEALER_WINS' })
+                    return
+                }
+                while (score <= DEALER_MIN_SCORE) {
+                    await new Promise(resolve => setTimeout(resolve, 1000))
+                    const { newScore, newState } = dealerHit(currentState)
+                    score = newScore.total
+                    currentState = newState
+                }
+                if (score > BLACKJACK_SCORE) {
+                    dispatch({ type: 'DEALER_BUSTS' })
+                    return
+                } else {
+                    if (score === state.playerScore.total) {
+                        dispatch({ type: 'PUSH' })
+                        return
+                    } else if (score < state.playerScore.total) {
+                        dispatch({ type: 'PLAYER_WINS' })
+                        return
+                    } else {
+                        dispatch({ type: 'DEALER_WINS' })
+                        return
+                    }
+                }
+            }
+        } finally {
+            setDealerTurnInProgress(false)
+        }
+    }
 
-                console.log('New Card: ', newCard)
-                console.log('New Dealer Cards: ', newDealerCards)
-                console.log('New Score: ', newScore)
+    function dealerHit(currentState) {
+                const newCard = currentState.deck[0]
+                const newDeck = currentState.deck.slice(1)
+                const newDealerCards = [...currentState.dealerCards, newCard]
+                const newScore = calculateScore(newDealerCards, true, true)
 
                 dispatch({
                     type: 'DEALER_HIT',
@@ -414,10 +409,7 @@ export default function BlackjackPage() {
                     }
                 })
 
-                resolve(newScore)
-
-            }, 1000)
-        })
+                return { newScore, newState: { ...currentState, dealerCards: newDealerCards, deck: newDeck, dealerScore: newScore } }
     }
 
     return (
