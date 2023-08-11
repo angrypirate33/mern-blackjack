@@ -152,7 +152,8 @@ export default function BlackjackPage() {
                     bankState: {
                         ...state.bankState,
                         bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2)
-                    }
+                    },
+                    turn: 'player'
                 }
             case 'PLAYER_BUSTS':
                 return {
@@ -166,7 +167,8 @@ export default function BlackjackPage() {
                     bankState: {
                         ...state.bankState,
                         bankAmt: state.bankState.bankAmt + state.bankState.wager
-                    }
+                    },
+                    turn: 'player'
                 }
             case 'PLAYER_WINS':
                 return {
@@ -175,12 +177,14 @@ export default function BlackjackPage() {
                     bankState: {
                         ...state.bankState,
                         bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2)
-                    }
+                    },
+                    turn: 'player'
                 }
             case 'DEALER_WINS':
                 return {
                     ...state,
-                    message: `Dealer wins, player loses $${state.bankState.wager}`
+                    message: `Dealer wins, player loses $${state.bankState.wager}`,
+                    turn: 'player'
                 }
             case 'RESET_TABLE':
                 return {
@@ -222,7 +226,7 @@ export default function BlackjackPage() {
             setDealerTurnInProgress(true)
             dealerTurn()
         }
-    }, [state.turn, dealerTurnInProgress])
+    }, [state.turn])
     
     function storeWager(wagerAmt) {
         dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
@@ -353,12 +357,13 @@ export default function BlackjackPage() {
             } else {
                 dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
                 dispatch({ type: 'UPDATE_MESSAGE', payload: "Dealer's Action" })
-                setTimeout(() => dispatch({ type: 'DEALER_TURN' }), 1000)
+                // setTimeout(() => dispatch({ type: 'DEALER_TURN' }), 1000)
             }
         }
     }
 
     async function dealerTurn() {
+        console.log('dealerTurn running...')
         try {
             if (state.turn === 'dealer' && !state.playerBlackjack && state.playerScore.total <= BLACKJACK_SCORE) {
                 let score = state.dealerScore.total
