@@ -26,7 +26,6 @@ export default function BlackjackPage() {
     }
 
     function bjReducer(state, action) {
-        console.log(action.type)
         switch (action.type) {
             case 'SET_DECK':
                 return {
@@ -353,17 +352,16 @@ export default function BlackjackPage() {
             const newDealerScore = calculateScore(state.dealerCards, true, true)
 
             if (newDealerScore.total > DEALER_MIN_SCORE && newDealerScore.total <= BLACKJACK_SCORE && newDealerScore.total > state.playerScore.total) {
+                dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
                 dispatch({ type: 'DEALER_WINS' })
             } else {
                 dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
                 dispatch({ type: 'UPDATE_MESSAGE', payload: "Dealer's Action" })
-                // setTimeout(() => dispatch({ type: 'DEALER_TURN' }), 1000)
             }
         }
     }
 
     async function dealerTurn() {
-        console.log('dealerTurn running...')
         try {
             if (state.turn === 'dealer' && !state.playerBlackjack && state.playerScore.total <= BLACKJACK_SCORE) {
                 let score = state.dealerScore.total
