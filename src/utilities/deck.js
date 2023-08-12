@@ -5,19 +5,22 @@ const NUM_DECKS = 10
 
 export function buildOriginalDeck() {
     const deck = []
-    suits.forEach(function(suit) {
-        ranks.forEach(function(rank) {
-            deck.push({
-                face: `${suit}${rank}`,
-                value: Number(rank) || (rank === 'A' ? 11 : 10)
+    for (let deckNum = 1; deckNum <= NUM_DECKS; deckNum++) {
+        suits.forEach(function(suit) {
+            ranks.forEach(function(rank) {
+                deck.push({
+                    id: `${suit}${rank}${deckNum}`,
+                    face: `${suit}${rank}`,
+                    value: Number(rank) || (rank === 'A' ? 11 : 10)
+                })
             })
         })
-    })
+    }
     return deck;
 }
 
 export function getNewShuffledDeck(originalDeck) {
-    const tempDeck = Array(NUM_DECKS).fill(originalDeck).flat();
+    const tempDeck = [...originalDeck]
     const newShuffledDeck = []
     while (tempDeck.length) {
       const rndIdx = Math.floor(Math.random() * tempDeck.length)

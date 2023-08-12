@@ -133,7 +133,9 @@ export default function BlackjackPage() {
             case 'DEALER_BLACKJACK':
                 return {
                     ...state,
-                    message: `Dealer hit blackjack, player loses $${state.bankState.wager}.`
+                    dealerRevealed: true,
+                    message: `Dealer hit blackjack, player loses $${state.bankState.wager}.`,
+                    turn: 'player'
                 }
             case 'PUSH_BLACKJACK':
                 return {
@@ -258,35 +260,40 @@ export default function BlackjackPage() {
                 if (i === 3) {
                     dScore = calculateScore(updatedDealerCards, true, false)
                     const dealerUpcard = updatedDealerCards[1]
-                    if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === BLACKJACK_SCORE) {
-                        payload = { 
-                            type: 'SET_DEALER_CARDS', 
-                            payload: { 
-                                cards: updatedDealerCards, 
-                                score: dScore, 
-                                revealed: true, 
-                                message: `Dealer hit blackjack, player loses $${state.bankState.wager}`
-                            }
-                        }
-                    } else {
-                        payload = { 
-                            cards: updatedDealerCards, 
-                            score: dScore, 
-                            revealed: false, 
-                            message: "Player's Action" 
-                        }
-                    }
-                } else {
-                    payload = {
+
+                    let cardPayload = {
                         cards: updatedDealerCards,
-                        revealed: false,
-                        message: 'Dealing Cards...'
+                        score: dScore
                     }
+
+                    if ((dealerUpcard.value === 10 || dealerUpcard.face) && dFullScore.total === BLACKJACK_SCORE) {
+                        cardPayload.revealed = true
+                    } else {
+                        cardPayload.revealed = false
+                        cardPayload.message = "Player's Action..." 
+                    }
+
+                    dispatch({
+                        type: 'SET_DEALER_CARDS',
+                        payload: cardPayload
+                    })
+                    
+                    if (cardPayload.revealed) {
+                        const updatedScore = calculateScore(updatedDealerCards, true, true)
+                        dispatch({ type: 'DEALER_BLACKJACK' })
+                        dispatch({ type: 'UPDATE_DEALER_SCORE', payload: updatedScore })
+                    }
+
+                } else {
+                    dispatch({
+                        type: 'SET_DEALER_CARDS',
+                        payload: {
+                            cards: updatedDealerCards,
+                            revealed: false,
+                            message: 'Dealing Cards...'
+                        }
+                    })
                 }  
-                dispatch({
-                    type: 'SET_DEALER_CARDS',
-                    payload: payload
-                }) 
             }
 
             dispatch({ type: 'SET_DECK', payload: deckCopy })
@@ -304,7 +311,7 @@ export default function BlackjackPage() {
                 if (pScore.total === BLACKJACK_SCORE && dScore.total !== BLACKJACK_SCORE) {
                     dispatch({ type: 'PLAYER_BLACKJACK' })
                 } else if (dScore.total === BLACKJACK_SCORE && pScore.total !== BLACKJACK_SCORE) {
-                    dispatch({ type: 'DEALER_BLACKJACK' })
+                    // dispatch({ type: 'DEALER_BLACKJACK' })
                     dispatch({ type: 'UPDATE_DEALER_SCORE', score: BLACKJACK_SCORE })
                 } else if (pScore.total === BLACKJACK_SCORE && dScore.total === BLACKJACK_SCORE) {
                     dispatch({ type: 'PUSH_BLACKJACK' })
