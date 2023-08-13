@@ -21,11 +21,14 @@ export default function BlackjackPage() {
         playerScore: null,
         deck: [],
         dealerRevealed: false,
+        dealerBlackjack: false,
+        playerBlackjack: false,
         turn: 'player',
         message: 'Place Wager...'
     }
 
     function bjReducer(state, action) {
+        console.log(action.type)
         switch (action.type) {
             case 'SET_DECK':
                 return {
@@ -71,9 +74,9 @@ export default function BlackjackPage() {
                 return {
                     ...state,
                     playerScore: action.payload.playerScore,
-                    dealerScore: action.payload.dealerScore,
+                    dealerScore: state.dealerBlackjack ? state.dealerScore : action.payload.dealerScore,
                     playerBlackjack: action.payload.playerBlackjack,
-                    dealerBlackjack: action.payload.dealerBlackjack
+                    // dealerBlackjack: action.payload.dealerBlackjack
                 }
             case 'PLAYER_HIT':
                 const newCard = state.deck[0]
@@ -134,6 +137,8 @@ export default function BlackjackPage() {
                 return {
                     ...state,
                     dealerRevealed: true,
+                    dealerBlackjack: true,
+                    dealerScore: { total: 21, aces: 1 },
                     message: `Dealer hit blackjack, player loses $${state.bankState.wager}.`,
                     turn: 'player'
                 }
@@ -279,9 +284,7 @@ export default function BlackjackPage() {
                     })
                     
                     if (cardPayload.revealed) {
-                        const updatedScore = calculateScore(updatedDealerCards, true, true)
                         dispatch({ type: 'DEALER_BLACKJACK' })
-                        dispatch({ type: 'UPDATE_DEALER_SCORE', payload: updatedScore })
                     }
 
                 } else {
@@ -312,7 +315,7 @@ export default function BlackjackPage() {
                     dispatch({ type: 'PLAYER_BLACKJACK' })
                 } else if (dScore.total === BLACKJACK_SCORE && pScore.total !== BLACKJACK_SCORE) {
                     // dispatch({ type: 'DEALER_BLACKJACK' })
-                    dispatch({ type: 'UPDATE_DEALER_SCORE', score: BLACKJACK_SCORE })
+                    // dispatch({ type: 'UPDATE_DEALER_SCORE', score: BLACKJACK_SCORE })
                 } else if (pScore.total === BLACKJACK_SCORE && dScore.total === BLACKJACK_SCORE) {
                     dispatch({ type: 'PUSH_BLACKJACK' })
                 }
