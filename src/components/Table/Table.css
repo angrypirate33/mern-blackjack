@@ -24,15 +24,21 @@
 .DealerScore, .PlayerScore {
     flex: 0 0 40%;
     margin-left: 4em;
+    min-height: 99px;
 }
 
 .DealerCards, .PlayerCards {
     flex: 0 0 60%;
     margin-left: 12em;
+    min-height: 211px;
 }
 
 .DealerCards {
     margin-top: 2em;
+}
+
+.DealerScore {
+    margin-top: 4em;
 }
 
 .PlayerCards {
