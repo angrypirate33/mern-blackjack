@@ -28,7 +28,6 @@ export default function BlackjackPage() {
     }
 
     function bjReducer(state, action) {
-        console.log(action.type)
         switch (action.type) {
             case 'SET_DECK':
                 return {

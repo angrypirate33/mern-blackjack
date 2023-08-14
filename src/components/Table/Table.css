@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     background-color: rgb(59, 93, 45);
     border-style: groove;
     border-width: 3em;
@@ -14,24 +14,43 @@
     padding: 2em;
 }
 
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%
+}
+
 .DealerScore, .PlayerScore {
-    margin-right: 22em;
-    margin-top: 4em;
+    flex: 0 0 40%;
+    margin-left: 4em;
 }
 
 .DealerCards, .PlayerCards {
-    margin-left: 8em;
+    flex: 0 0 60%;
+    margin-left: 12em;
 }
 
 .DealerCards {
+    margin-top: 2em;
+}
+
+.PlayerCards {
     margin-top: -2em;
 }
 
 .WagerInfo {
-    padding-left: 5em;
+    max-width: 300px;
+    margin: 0 auto;
 }
 
 .BankrollInfo {
-    margin-top: -2em;
-    margin-bottom: -3em;
+    max-width: 300px;
+    margin: 0 auto;
+    margin-top: -1.5em;
+}
+
+.PlayerActions {
+    max-width: 300px;
+    margin: 0 auto;
 }
