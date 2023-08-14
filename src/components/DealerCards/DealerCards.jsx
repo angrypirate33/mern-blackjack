@@ -5,7 +5,7 @@ import './DealerCards.css'
 function DealerCards({ cards, dealerRevealed }) {
     return (
         <div className='DealerCards'>
-            <h4>Dealer's Cards</h4>
+            <h4 className='card-title'>Dealer's Cards</h4>
             {
                 cards.map((card, index) => {
                     const isFaceDown = index === 0 && !dealerRevealed

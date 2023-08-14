@@ -5,7 +5,7 @@ import './PlayerCards.css'
 export default function PlayerCards({ cardClassName, cards }) {
     return (
         <div className='PlayerCards'>
-            <h4>Player's Cards</h4>
+            <h4 className='card-title'>Player's Cards</h4>
             {cards.map((card) => <Card key={card.id} card={card} cardClassName={card.face} />)}
         </div>
     )
