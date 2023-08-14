@@ -6,19 +6,21 @@ function DealerCards({ cards, dealerRevealed }) {
     return (
         <div className='DealerCards'>
             <h4 className='card-title'>Dealer's Cards</h4>
-            {
-                cards.map((card, index) => {
-                    const isFaceDown = index === 0 && !dealerRevealed
-                    const className = isFaceDown ? 'back-red' : card.face
-                    return (
-                        <Card 
-                            key={card.id} 
-                            card={card} 
-                            cardClassName={className} 
-                        />
-                    )
-                })
-            }
+            <div className='dealt-cards'>
+                {
+                    cards.map((card, index) => {
+                        const isFaceDown = index === 0 && !dealerRevealed
+                        const className = isFaceDown ? 'back-red' : card.face
+                        return (
+                            <Card
+                                key={card.id}
+                                card={card}
+                                cardClassName={className}
+                            />
+                        )
+                    })
+                }
+            </div>
         </div>
     )
 }

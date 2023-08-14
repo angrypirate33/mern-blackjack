@@ -91,17 +91,6 @@
         min-height: 175px;
     }
     
-    .DealerCards {
-    }
-    
-    .DealerScore {
-        
-    }
-    
-    .PlayerCards {
-        
-    }
-    
     .WagerInfo {
         margin-top: .5em;
         
@@ -115,6 +104,80 @@
 
 @media only screen and (max-width: 767px) {
     .Table {
-        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(59, 93, 45);
+        border-style: groove;
+        border-width: 0;
+        border-radius: 0;
+        border-color: black;
+        margin: .5em;
+        height: 73vh;
+        width: 100vw;
+        padding: 0;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .dealt-cards {
+        margin-left: -6em;
+    }
+
+    .card-title {
+        margin-top: -.5em;
+        margin-bottom: 1.5em;
+        font-size: 1.75em;
+    }
+    
+    .DealerCards, .PlayerCards {
+        margin-top: -2em;
+        min-height: 120px;
+        margin-left: 0;
+        padding-left: 7.65em;
+    }
+    .Card {
+        transform: scale(2.5);
+        margin-left: 2em;
+    }
+    
+    .DealerCards {
+    }
+    
+    .DealerScore {
+      margin-top: -1em;  
+    }
+
+    #title {
+        margin-bottom: -.5em;
+    }
+
+    .PlayerScore {
+        margin-top: -3em;
+    }
+    
+    .PlayerCards {
+        margin-top: -2em;
+    }
+    
+    .WagerInfo {
+        margin: 0 auto;
+        margin-top: 2em;
+    }
+    
+    .BankrollInfo {
+        margin: 0 auto;
+        margin-top: -2em;
+    }
+    
+    .PlayerActions {
+        margin: 0 auto;
+        margin-top: 1.5em;
     }
 }
