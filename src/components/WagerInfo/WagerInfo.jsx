@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './WagerInfo.css'
 
-export default function WagerInfo({ storeAndDeal }) {
+export default function WagerInfo({ storeAndDeal, handActive}) {
 
     const [wagerAmount, setWagerAmount] = useState(10)
     
@@ -29,6 +29,7 @@ export default function WagerInfo({ storeAndDeal }) {
                 className='waves-effect waves-light btn red darken-4'
                 id='place-bet-button'
                 onClick={handleClick}
+                disabled={handActive}
             >
                 Place Bet
             </button>

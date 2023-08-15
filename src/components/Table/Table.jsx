@@ -19,7 +19,9 @@ export default function Table({
     dealerRevealed,
     playerHit,
     playerStand,
-    dispatch 
+    dispatch,
+    handActive,
+    setHandActive
 }) {
     return (
         <div className='Table'>
@@ -43,6 +45,8 @@ export default function Table({
                     <WagerInfo 
                         storeAndDeal={storeAndDeal}
                         dispatch={dispatch}
+                        handActive={handActive}
+                        setHandActive={setHandActive}
                     />
                 </div>
             </div>

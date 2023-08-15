@@ -1,4 +1,4 @@
-import { useState } from 'react'
+
 import './BlackjackInfo.css'
 
 export default function BlackjackInfo({ rulesVisible, setRulesVisible }) {

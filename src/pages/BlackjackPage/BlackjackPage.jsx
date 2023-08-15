@@ -9,6 +9,7 @@ export default function BlackjackPage() {
 
     const [rulesVisible, setRulesVisible] = useState(false)
     const [dealerTurnInProgress, setDealerTurnInProgress] = useState(false)
+    const [handActive, setHandActive] = useState(false)
 
     const BLACKJACK_SCORE = 21
     const DEALER_MIN_SCORE = 16
@@ -223,6 +224,7 @@ export default function BlackjackPage() {
             dispatch({ 
                 type: 'PLAYER_BUSTS'
             })
+            setHandActive(false)
         }
     }, [state.playerScore])
     
@@ -238,6 +240,8 @@ export default function BlackjackPage() {
     }
 
     async function dealCards() {
+
+        setHandActive(true)
         
         dispatch({ type: 'DEAL_CARDS_START' })
 
@@ -312,11 +316,13 @@ export default function BlackjackPage() {
                 })
                 if (pScore.total === BLACKJACK_SCORE && dScore.total !== BLACKJACK_SCORE) {
                     dispatch({ type: 'PLAYER_BLACKJACK' })
+                    setHandActive(false)
                 } else if (dScore.total === BLACKJACK_SCORE && pScore.total !== BLACKJACK_SCORE) {
                     // dispatch({ type: 'DEALER_BLACKJACK' })
                     // dispatch({ type: 'UPDATE_DEALER_SCORE', score: BLACKJACK_SCORE })
                 } else if (pScore.total === BLACKJACK_SCORE && dScore.total === BLACKJACK_SCORE) {
                     dispatch({ type: 'PUSH_BLACKJACK' })
+                    setHandActive(false)
                 }
             }
         }
@@ -363,6 +369,7 @@ export default function BlackjackPage() {
             if (newDealerScore.total > DEALER_MIN_SCORE && newDealerScore.total <= BLACKJACK_SCORE && newDealerScore.total > state.playerScore.total) {
                 dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
                 dispatch({ type: 'DEALER_WINS' })
+                setHandActive(false)
             } else {
                 dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
                 dispatch({ type: 'UPDATE_MESSAGE', payload: "Dealer's Action" })
@@ -377,6 +384,7 @@ export default function BlackjackPage() {
                 let currentState = state
                 if (score > DEALER_MIN_SCORE && score < BLACKJACK_SCORE && score > state.playerScore.total) {
                     dispatch({ type: 'DEALER_WINS' })
+                    setHandActive(false)
                     return
                 }
                 while (score <= DEALER_MIN_SCORE) {
@@ -387,22 +395,27 @@ export default function BlackjackPage() {
                 }
                 if (score > BLACKJACK_SCORE) {
                     dispatch({ type: 'DEALER_BUSTS' })
+                    setHandActive(false)
                     return
                 } else {
                     if (score === state.playerScore.total) {
                         dispatch({ type: 'PUSH' })
+                        setHandActive(false)
                         return
                     } else if (score < state.playerScore.total) {
                         dispatch({ type: 'PLAYER_WINS' })
+                        setHandActive(false)
                         return
                     } else {
                         dispatch({ type: 'DEALER_WINS' })
+                        setHandActive(false)
                         return
                     }
                 }
             }
         } finally {
             setDealerTurnInProgress(false)
+            setHandActive(false)
         }
     }
 
@@ -445,6 +458,8 @@ export default function BlackjackPage() {
                     playerHit={playerHit}
                     playerStand={playerStand}
                     dispatch={dispatch}
+                    handActive={handActive}
+                    setHandActive={setHandActive}
                 />
         </div>
     )
