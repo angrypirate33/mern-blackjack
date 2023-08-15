@@ -21,7 +21,9 @@ export default function Table({
     playerStand,
     dispatch,
     handActive,
-    setHandActive
+    setHandActive,
+    turn,
+    playerAction
 }) {
     return (
         <div className='Table'>
@@ -78,6 +80,8 @@ export default function Table({
                         hit={playerHit}
                         stand={playerStand}
                         dispatch={dispatch}
+                        turn={turn}
+                        playerAction={playerAction}
                     />
                 </div>
             </div>

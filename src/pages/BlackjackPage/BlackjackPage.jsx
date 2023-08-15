@@ -10,6 +10,7 @@ export default function BlackjackPage() {
     const [rulesVisible, setRulesVisible] = useState(false)
     const [dealerTurnInProgress, setDealerTurnInProgress] = useState(false)
     const [handActive, setHandActive] = useState(false)
+    const [playerAction, setPlayerAction] = useState(false)
 
     const BLACKJACK_SCORE = 21
     const DEALER_MIN_SCORE = 16
@@ -210,6 +211,8 @@ export default function BlackjackPage() {
 
     const [state, dispatch] = useReducer(bjReducer, initialState)
 
+    const { turn } = state
+
     useEffect(() => {
         const originalDeck = buildOriginalDeck()
         const shuffledDeck = getNewShuffledDeck(originalDeck)
@@ -314,6 +317,7 @@ export default function BlackjackPage() {
                         dealerBlackjack: dScore.total === BLACKJACK_SCORE 
                     }
                 })
+                setPlayerAction(true)
                 if (pScore.total === BLACKJACK_SCORE && dScore.total !== BLACKJACK_SCORE) {
                     dispatch({ type: 'PLAYER_BLACKJACK' })
                     setHandActive(false)
@@ -370,6 +374,7 @@ export default function BlackjackPage() {
                 dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
                 dispatch({ type: 'DEALER_WINS' })
                 setHandActive(false)
+                setPlayerAction(false)
             } else {
                 dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
                 dispatch({ type: 'UPDATE_MESSAGE', payload: "Dealer's Action" })
@@ -385,6 +390,7 @@ export default function BlackjackPage() {
                 if (score > DEALER_MIN_SCORE && score < BLACKJACK_SCORE && score > state.playerScore.total) {
                     dispatch({ type: 'DEALER_WINS' })
                     setHandActive(false)
+                    setPlayerAction(false)
                     return
                 }
                 while (score <= DEALER_MIN_SCORE) {
@@ -401,14 +407,17 @@ export default function BlackjackPage() {
                     if (score === state.playerScore.total) {
                         dispatch({ type: 'PUSH' })
                         setHandActive(false)
+                        setPlayerAction(false)
                         return
                     } else if (score < state.playerScore.total) {
                         dispatch({ type: 'PLAYER_WINS' })
                         setHandActive(false)
+                        setPlayerAction(false)
                         return
                     } else {
                         dispatch({ type: 'DEALER_WINS' })
                         setHandActive(false)
+                        setPlayerAction(false)
                         return
                     }
                 }
@@ -416,6 +425,7 @@ export default function BlackjackPage() {
         } finally {
             setDealerTurnInProgress(false)
             setHandActive(false)
+            setPlayerAction(false)
         }
     }
 
@@ -460,6 +470,8 @@ export default function BlackjackPage() {
                     dispatch={dispatch}
                     handActive={handActive}
                     setHandActive={setHandActive}
+                    turn={turn}
+                    playerAction={playerAction}
                 />
         </div>
     )
