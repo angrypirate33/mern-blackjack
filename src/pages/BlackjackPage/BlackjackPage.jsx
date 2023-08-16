@@ -5,7 +5,7 @@ import Table from '../../components/Table/Table'
 import MessageCenter from '../../components/MessageCenter/MessageCenter'
 import '../../pages/BlackjackPage/BlackjackPage.css'
 
-export default function BlackjackPage() {
+export default function BlackjackPage({ user }) {
 
     const [rulesVisible, setRulesVisible] = useState(false)
     const [dealerTurnInProgress, setDealerTurnInProgress] = useState(false)
@@ -19,7 +19,10 @@ export default function BlackjackPage() {
     const cardSound = new Audio('/sound/cardflip.mp3')
 
     const initialState = {
-        bankState: { bankAmt: 1000, wager: 0},
+        bankState: { 
+            bankAmt: user.isGuest ? 1500 : user.bankroll, 
+            wager: 0
+        },
         playerCards: [],
         dealerCards: [],
         dealerScore: null,
@@ -228,6 +231,19 @@ export default function BlackjackPage() {
         })
     }, [])
 
+    
+    useEffect(() => {
+        if (state.deck.length < 52 && !handActive) {
+        const originalDeck = buildOriginalDeck()
+        const shuffledDeck = getNewShuffledDeck(originalDeck)
+        
+        dispatch({ 
+            type: 'SET_DECK', 
+            payload: shuffledDeck
+        })
+        }
+    }, [state.deck, handActive])
+
     useEffect(() => {
         if (state.playerScore && state.playerScore.total > BLACKJACK_SCORE) {
             dispatch({ 
@@ -426,7 +442,6 @@ export default function BlackjackPage() {
                 } else {
                     if (score === state.playerScore.total) {
                         dispatch({ type: 'PUSH' })
-                        playChipSound()
                         setHandActive(false)
                         setPlayerAction(false)
                         return

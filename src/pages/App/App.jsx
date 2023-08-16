@@ -26,7 +26,10 @@ export default function App() {
         <>
           <Nav user={user} setUser={handleSetUser} />
           <Routes>
-            <Route path='/' element={<BlackjackPage />} />
+            <Route 
+              path='/' 
+              element={<BlackjackPage user={user} />} 
+            />
           </Routes>
         </>
         : 

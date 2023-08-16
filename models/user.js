@@ -21,6 +21,11 @@ const userSchema = new Schema({
         trim: true,
         minLength: 3,
         required: true
+    },
+    bankroll: {
+        type: Number,
+        required: true,
+        default: 1000
     }
 }, {
     timestamps: true,
