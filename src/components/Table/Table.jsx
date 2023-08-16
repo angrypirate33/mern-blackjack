@@ -23,7 +23,8 @@ export default function Table({
     handActive,
     setHandActive,
     turn,
-    playerAction
+    playerAction,
+    playChipSound
 }) {
     return (
         <div className='Table'>
@@ -49,6 +50,7 @@ export default function Table({
                         dispatch={dispatch}
                         handActive={handActive}
                         setHandActive={setHandActive}
+                        playChipSound={playChipSound}
                     />
                 </div>
             </div>

@@ -15,6 +15,9 @@ export default function BlackjackPage() {
     const BLACKJACK_SCORE = 21
     const DEALER_MIN_SCORE = 16
 
+    const chipSound = new Audio('/sound/chips.mp3')
+    const cardSound = new Audio('/sound/cardflip.mp3')
+
     const initialState = {
         bankState: { bankAmt: 1000, wager: 0},
         playerCards: [],
@@ -261,6 +264,8 @@ export default function BlackjackPage() {
         for (let i = 0; i < 4; i++) {
 
             await new Promise(resolve => setTimeout(resolve, 1000))
+            
+            playCardSound()
 
             const card = deckCopy.shift()
             if (i % 2 === 0) {
@@ -291,11 +296,14 @@ export default function BlackjackPage() {
                         type: 'SET_DEALER_CARDS',
                         payload: cardPayload
                     })
+
+                    playCardSound()
                     
                     if (cardPayload.revealed) {
                         dispatch({ type: 'DEALER_BLACKJACK' })
                         setHandActive(false)
                         setPlayerAction(false)
+                        playCardSound()
                     }
 
                 } else {
@@ -325,6 +333,7 @@ export default function BlackjackPage() {
                 
                 if (pScore.total === BLACKJACK_SCORE && dFullScore.total !== BLACKJACK_SCORE) {
                     dispatch({ type: 'PLAYER_BLACKJACK' })
+                    playChipSound()
                     setHandActive(false)
                 } else if (dFullScore.total === BLACKJACK_SCORE && pScore.total !== BLACKJACK_SCORE) {
                     setPlayerAction(false)
@@ -332,6 +341,7 @@ export default function BlackjackPage() {
                     // dispatch({ type: 'UPDATE_DEALER_SCORE', score: BLACKJACK_SCORE })
                 } else if (pScore.total === BLACKJACK_SCORE && dFullScore.total === BLACKJACK_SCORE) {
                     dispatch({ type: 'PUSH_BLACKJACK' })
+                    playChipSound()
                     setHandActive(false)
                 } else {
                     setPlayerAction(true)
@@ -370,7 +380,8 @@ export default function BlackjackPage() {
     }
 
     function playerHit() {
-        dispatch({ type: 'PLAYER_HIT' })      
+        dispatch({ type: 'PLAYER_HIT' })
+        playCardSound()      
     }
 
     function playerStand() {
@@ -409,16 +420,19 @@ export default function BlackjackPage() {
                 }
                 if (score > BLACKJACK_SCORE) {
                     dispatch({ type: 'DEALER_BUSTS' })
+                    playChipSound()
                     setHandActive(false)
                     return
                 } else {
                     if (score === state.playerScore.total) {
                         dispatch({ type: 'PUSH' })
+                        playChipSound()
                         setHandActive(false)
                         setPlayerAction(false)
                         return
                     } else if (score < state.playerScore.total) {
                         dispatch({ type: 'PLAYER_WINS' })
+                        playChipSound()
                         setHandActive(false)
                         setPlayerAction(false)
                         return
@@ -443,6 +457,8 @@ export default function BlackjackPage() {
                 const newDealerCards = [...currentState.dealerCards, newCard]
                 const newScore = calculateScore(newDealerCards, true, true)
 
+                playCardSound()
+
                 dispatch({
                     type: 'DEALER_HIT',
                     payload: {
@@ -453,6 +469,14 @@ export default function BlackjackPage() {
                 })
 
                 return { newScore, newState: { ...currentState, dealerCards: newDealerCards, deck: newDeck, dealerScore: newScore } }
+    }
+
+    function playChipSound() {
+        chipSound.play()
+    }
+
+    function playCardSound() {
+        cardSound.play()
     }
 
     return (
@@ -480,6 +504,7 @@ export default function BlackjackPage() {
                     setHandActive={setHandActive}
                     turn={turn}
                     playerAction={playerAction}
+                    playChipSound={playChipSound}
                 />
         </div>
     )

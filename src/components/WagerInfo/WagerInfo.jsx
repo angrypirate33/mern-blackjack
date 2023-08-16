@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './WagerInfo.css'
 
-export default function WagerInfo({ storeAndDeal, handActive}) {
+export default function WagerInfo({ storeAndDeal, handActive, playChipSound}) {
 
     const [wagerAmount, setWagerAmount] = useState(10)
     
@@ -10,6 +10,7 @@ export default function WagerInfo({ storeAndDeal, handActive}) {
     }
 
     const handleClick = () => {
+        playChipSound()
         storeAndDeal(wagerAmount)
     }
 
