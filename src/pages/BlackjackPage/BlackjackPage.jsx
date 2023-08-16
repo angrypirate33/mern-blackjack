@@ -201,6 +201,8 @@ export default function BlackjackPage() {
                     playerScore: null,
                     dealerScore: null,
                     dealerRevealed: false,
+                    playerBlackjack: false,
+                    dealerBlackjack: false,
                     turn: 'player',
                     bankState: { ...state.bankState, wager: 0 }
                 }
@@ -319,16 +321,19 @@ export default function BlackjackPage() {
                         dealerBlackjack: dScore.total === BLACKJACK_SCORE 
                     }
                 })
-                setPlayerAction(true)
-                if (pScore.total === BLACKJACK_SCORE && dScore.total !== BLACKJACK_SCORE) {
+                
+                if (pScore.total === BLACKJACK_SCORE && dFullScore.total !== BLACKJACK_SCORE) {
                     dispatch({ type: 'PLAYER_BLACKJACK' })
                     setHandActive(false)
-                } else if (dScore.total === BLACKJACK_SCORE && pScore.total !== BLACKJACK_SCORE) {
+                } else if (dFullScore.total === BLACKJACK_SCORE && pScore.total !== BLACKJACK_SCORE) {
+                    setPlayerAction(false)
                     // dispatch({ type: 'DEALER_BLACKJACK' })
                     // dispatch({ type: 'UPDATE_DEALER_SCORE', score: BLACKJACK_SCORE })
-                } else if (pScore.total === BLACKJACK_SCORE && dScore.total === BLACKJACK_SCORE) {
+                } else if (pScore.total === BLACKJACK_SCORE && dFullScore.total === BLACKJACK_SCORE) {
                     dispatch({ type: 'PUSH_BLACKJACK' })
                     setHandActive(false)
+                } else {
+                    setPlayerAction(true)
                 }
             }
         }
