@@ -28,3 +28,21 @@ export function getNewShuffledDeck(originalDeck) {
     }
     return newShuffledDeck
 }
+
+export function getBlackjackDeck(originalDeck) {
+    const blackjackCards = [
+        {face: 'hA', value: 11}, 
+        {face: 'cA', value: 11}, 
+        {face: 'hK', value: 10}, 
+        {face: 'c10', value: 10}
+    ]
+    const tempDeck = [...originalDeck]
+
+    const newShuffledDeck = [...blackjackCards]
+    
+    while (tempDeck.length) {
+        const rndIdx = Math.floor(Math.random() * tempDeck.length)
+        newShuffledDeck.push(tempDeck.splice(rndIdx, 1)[0]) 
+    }
+    return newShuffledDeck
+}

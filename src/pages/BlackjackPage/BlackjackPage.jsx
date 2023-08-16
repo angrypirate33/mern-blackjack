@@ -1,5 +1,5 @@
 import { useState, useEffect, useReducer } from 'react'
-import { buildOriginalDeck, getNewShuffledDeck } from '../../utilities/deck'
+import { buildOriginalDeck, getNewShuffledDeck, getBlackjackDeck } from '../../utilities/deck'
 import BlackjackInfo from '../../components/BlackjackInfo/BlackjackInfo'
 import Table from '../../components/Table/Table'
 import MessageCenter from '../../components/MessageCenter/MessageCenter'
@@ -218,6 +218,7 @@ export default function BlackjackPage() {
     useEffect(() => {
         const originalDeck = buildOriginalDeck()
         const shuffledDeck = getNewShuffledDeck(originalDeck)
+        // const shuffledDeck = getBlackjackDeck(originalDeck)
         dispatch({ 
             type: 'SET_DECK', 
             payload: shuffledDeck
