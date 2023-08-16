@@ -4,3 +4,9 @@
     width: 10em;
     font-weight: bold;
 }
+
+#hit-button:disabled, #stand-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: red !important;
+}
