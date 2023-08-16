@@ -291,6 +291,8 @@ export default function BlackjackPage() {
                     
                     if (cardPayload.revealed) {
                         dispatch({ type: 'DEALER_BLACKJACK' })
+                        setHandActive(false)
+                        setPlayerAction(false)
                     }
 
                 } else {
