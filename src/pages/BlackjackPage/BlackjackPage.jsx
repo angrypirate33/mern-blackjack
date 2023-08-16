@@ -20,7 +20,7 @@ export default function BlackjackPage({ user }) {
 
     const initialState = {
         bankState: { 
-            bankAmt: user.isGuest ? 1500 : user.bankroll, 
+            bankAmt: user.name === 'Guest' ? 1000 : user.bankroll, 
             wager: 0
         },
         playerCards: [],
