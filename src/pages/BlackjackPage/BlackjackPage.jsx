@@ -11,6 +11,7 @@ export default function BlackjackPage({ user }) {
     const [dealerTurnInProgress, setDealerTurnInProgress] = useState(false)
     const [handActive, setHandActive] = useState(false)
     const [playerAction, setPlayerAction] = useState(false)
+    const [updateDb, setUpdateDb] = useState(false)
 
     const BLACKJACK_SCORE = 21
     const DEALER_MIN_SCORE = 16
@@ -245,11 +246,20 @@ export default function BlackjackPage({ user }) {
     }, [state.deck, handActive])
 
     useEffect(() => {
+        if (updateDb) {
+            console.log('update function hit for: ', state.bankState.bankAmt)
+            updateBankrollInDb(user._id, state.bankState.bankAmt)
+            setUpdateDb(false)
+        }
+    }, [updateDb, user._id, state.bankState.bankAmt])
+
+    useEffect(() => {
         if (state.playerScore && state.playerScore.total > BLACKJACK_SCORE) {
             dispatch({ 
                 type: 'PLAYER_BUSTS'
             })
             setHandActive(false)
+            setUpdateDb(true)
         }
     }, [state.playerScore])
     
@@ -318,6 +328,7 @@ export default function BlackjackPage({ user }) {
                     if (cardPayload.revealed) {
                         dispatch({ type: 'DEALER_BLACKJACK' })
                         setHandActive(false)
+                        setUpdateDb(true)
                         setPlayerAction(false)
                         playCardSound()
                     }
@@ -351,6 +362,7 @@ export default function BlackjackPage({ user }) {
                     dispatch({ type: 'PLAYER_BLACKJACK' })
                     playChipSound()
                     setHandActive(false)
+                    setUpdateDb(true)
                 } else if (dFullScore.total === BLACKJACK_SCORE && pScore.total !== BLACKJACK_SCORE) {
                     setPlayerAction(false)
                     // dispatch({ type: 'DEALER_BLACKJACK' })
@@ -359,6 +371,7 @@ export default function BlackjackPage({ user }) {
                     dispatch({ type: 'PUSH_BLACKJACK' })
                     playChipSound()
                     setHandActive(false)
+                    setUpdateDb(true)
                 } else {
                     setPlayerAction(true)
                 }
@@ -409,6 +422,7 @@ export default function BlackjackPage({ user }) {
                 dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
                 dispatch({ type: 'DEALER_WINS' })
                 setHandActive(false)
+                setUpdateDb(true)
                 setPlayerAction(false)
             } else {
                 dispatch({ type: 'UPDATE_DEALER_SCORE', payload: newDealerScore })
@@ -425,6 +439,7 @@ export default function BlackjackPage({ user }) {
                 if (score > DEALER_MIN_SCORE && score < BLACKJACK_SCORE && score > state.playerScore.total) {
                     dispatch({ type: 'DEALER_WINS' })
                     setHandActive(false)
+                    setUpdateDb(true)
                     setPlayerAction(false)
                     return
                 }
@@ -438,22 +453,27 @@ export default function BlackjackPage({ user }) {
                     dispatch({ type: 'DEALER_BUSTS' })
                     playChipSound()
                     setHandActive(false)
+                    setUpdateDb(true)
                     return
                 } else {
                     if (score === state.playerScore.total) {
                         dispatch({ type: 'PUSH' })
                         setHandActive(false)
+                        setUpdateDb(true)
+                        setUpdateDb(true)
                         setPlayerAction(false)
                         return
                     } else if (score < state.playerScore.total) {
                         dispatch({ type: 'PLAYER_WINS' })
                         playChipSound()
                         setHandActive(false)
+                        setUpdateDb(true)
                         setPlayerAction(false)
                         return
                     } else {
                         dispatch({ type: 'DEALER_WINS' })
                         setHandActive(false)
+                        setUpdateDb(true)
                         setPlayerAction(false)
                         return
                     }
@@ -462,6 +482,7 @@ export default function BlackjackPage({ user }) {
         } finally {
             setDealerTurnInProgress(false)
             setHandActive(false)
+            setUpdateDb(true)
             setPlayerAction(false)
         }
     }
@@ -484,6 +505,20 @@ export default function BlackjackPage({ user }) {
                 })
 
                 return { newScore, newState: { ...currentState, dealerCards: newDealerCards, deck: newDeck, dealerScore: newScore } }
+    }
+
+    function updateBankrollInDb(userId, newBankroll) {
+        fetch(`/api/bankroll/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bankroll: newBankroll})
+        })
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Error updating bankroll: ', error)
+        })
     }
 
     function playChipSound() {
