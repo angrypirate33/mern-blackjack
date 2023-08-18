@@ -247,7 +247,6 @@ export default function BlackjackPage({ user }) {
 
     useEffect(() => {
         if (updateDb) {
-            console.log('update function hit for: ', state.bankState.bankAmt)
             updateBankrollInDb(user._id, state.bankState.bankAmt)
             setUpdateDb(false)
         }
