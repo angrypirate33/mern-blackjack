@@ -1,8 +1,21 @@
 .HandHistory {
-    display: flex;
     justify-content: center;
+    color: white;
 }
 
 #hand-history-title {
     color: white;
+    text-align: center;
+}
+
+.hands-per-page-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#hands-per-page-dropdown {
+    height: 2em;
+    width: 4em;
+    margin-left: 1em;
 }

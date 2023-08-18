@@ -22,6 +22,22 @@ export default function HandHistory({ user }) {
     return (
         <div className='HandHistory'>
             <h2 id='hand-history-title'>Hand History for {user.name}</h2>
+
+            <div className='hands-per-page-container'>
+                <div col s12>
+                    <h5>Hands per Page: </h5>
+                </div>
+                <div className='input-field col s12'>
+                    <select onChange={(e) => setHandsPerPage(Number(e.target.value))} className='browser-default' id='hands-per-page-dropdown'>
+                        <option value={25}>25</option>
+                        <option value={50}>50</option>
+                        <option value={75}>75</option>
+                        <option value={100}>100</option>
+                    </select>
+                </div>
+            </div>
+
+
         </div>
     )
 }
