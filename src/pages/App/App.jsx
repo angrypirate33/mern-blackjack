@@ -13,7 +13,7 @@ export default function App() {
 
   const handleSetUser = (userData) => {
     if (userData === 'GUEST') {
-      setUser({ name: 'Guest' })
+      setUser({ name: 'Guest', isGuest: true })
     } else {
       setUser(userData)
     }

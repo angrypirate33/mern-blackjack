@@ -517,48 +517,44 @@ export default function BlackjackPage({ user }) {
     }
 
     function updateBankrollInDb(userId, newBankroll) {
-        fetch(`/api/bankrolls/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ bankroll: newBankroll})
-        })
-        .then(response => response.json())
-        .catch(error => {
-            console.error('Error updating bankroll: ', error)
-        })
+        if (!user.isGuest) {
+            fetch(`/api/bankrolls/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ bankroll: newBankroll})
+            })
+            .then(response => response.json())
+            .catch(error => {
+                console.error('Error updating bankroll: ', error)
+            })
+        }
     }
 
     function addHandToDb() {
-        const testBody = {
-            userId: user._id,
-            dealerCards: state.dealerCards,
-            playerCards: state.playerCards,
-            result: state.result,
-            wagerAmount: state.bankState.wager
-        }
-        console.log(testBody)
-        fetch('api/hands/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                userId: user._id,
-                dealerCards: state.dealerCards,
-                playerCards: state.playerCards,
-                result: state.result,
-                wagerAmount: state.bankState.wager
+        if (!user.isGuest) {
+            fetch('api/hands/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: user._id,
+                    dealerCards: state.dealerCards,
+                    playerCards: state.playerCards,
+                    result: state.result,
+                    wagerAmount: state.bankState.wager
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Response from server: ', data)
-        })
-        .catch(error => {
-            console.error('Error adding hand to database: ', error)
-        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server: ', data)
+            })
+            .catch(error => {
+                console.error('Error adding hand to database: ', error)
+            })
+        }
     }
 
     function playChipSound() {

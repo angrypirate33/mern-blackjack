@@ -26,6 +26,10 @@ const userSchema = new Schema({
         type: Number,
         required: true,
         default: 1000
+    },
+    isGuest: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true,
