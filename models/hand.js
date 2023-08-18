@@ -1,13 +1,19 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const cardSchema = new Schema({
+    id: String,
+    face: String,
+    value: Number
+}, { _id: false })
+
 const handSchema = new Schema({
     dealerCards: {
-        type: [String],
+        type: [cardSchema],
         required: true
     },
     playerCards: {
-        type: [String],
+        type: [cardSchema],
         required: true
     },
     result: {

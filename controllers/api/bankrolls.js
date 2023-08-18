@@ -5,8 +5,6 @@ module.exports = {
 }
 
 async function update(req, res) {
-    console.log('Inside update function')
-
     try {
         const user = await User.findById(req.params.userId)
         if (!user) {

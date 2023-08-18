@@ -33,7 +33,8 @@ export default function BlackjackPage({ user }) {
         dealerBlackjack: false,
         playerBlackjack: false,
         turn: 'player',
-        message: 'Place Wager...'
+        message: 'Place Wager...',
+        result: null
     }
 
     function bjReducer(state, action) {
@@ -139,7 +140,8 @@ export default function BlackjackPage({ user }) {
                     bankState: {
                         ...state.bankState,
                         bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2.5)
-                    }
+                    },
+                    result: 'win'
                 }
             case 'DEALER_BLACKJACK':
                 return {
@@ -148,7 +150,8 @@ export default function BlackjackPage({ user }) {
                     dealerBlackjack: true,
                     dealerScore: { total: 21, aces: 1 },
                     message: `Dealer hit blackjack, player loses $${state.bankState.wager}.`,
-                    turn: 'player'
+                    turn: 'player',
+                    result: 'loss'
                 }
             case 'PUSH_BLACKJACK':
                 return {
@@ -156,8 +159,9 @@ export default function BlackjackPage({ user }) {
                     message: `Both player and dealer hit blackjack, $${state.bankState.wager} has been returned to the player's bankroll.`,
                     bankState: {
                         ...state.bankState,
-                        bankAmt: state.bankState.bankAmt + state.bankState.wager
-                    }
+                        bankAmt: state.bankState.bankAmt + (state.bankState.wager * 1)
+                    },
+                    result: 'push'
                 }
             case 'DEALER_BUSTS':
                 return {
@@ -167,12 +171,14 @@ export default function BlackjackPage({ user }) {
                         ...state.bankState,
                         bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2)
                     },
-                    turn: 'player'
+                    turn: 'player',
+                    result: 'win'
                 }
             case 'PLAYER_BUSTS':
                 return {
                     ...state,
-                    message: `Player busts and loses $${state.bankState.wager}.`
+                    message: `Player busts and loses $${state.bankState.wager}.`,
+                    result: 'loss'
                 }
             case 'PUSH':
                 return {
@@ -182,7 +188,8 @@ export default function BlackjackPage({ user }) {
                         ...state.bankState,
                         bankAmt: state.bankState.bankAmt + state.bankState.wager
                     },
-                    turn: 'player'
+                    turn: 'player',
+                    result: 'push'
                 }
             case 'PLAYER_WINS':
                 return {
@@ -192,13 +199,15 @@ export default function BlackjackPage({ user }) {
                         ...state.bankState,
                         bankAmt: state.bankState.bankAmt + (state.bankState.wager * 2)
                     },
-                    turn: 'player'
+                    turn: 'player',
+                    result: 'win'
                 }
             case 'DEALER_WINS':
                 return {
                     ...state,
                     message: `Dealer wins, player loses $${state.bankState.wager}`,
-                    turn: 'player'
+                    turn: 'player',
+                    result: 'loss'
                 }
             case 'RESET_TABLE':
                 return {
@@ -248,6 +257,7 @@ export default function BlackjackPage({ user }) {
     useEffect(() => {
         if (updateDb) {
             updateBankrollInDb(user._id, state.bankState.bankAmt)
+            addHandToDb()
             setUpdateDb(false)
         }
     }, [updateDb, user._id, state.bankState.bankAmt])
@@ -507,7 +517,7 @@ export default function BlackjackPage({ user }) {
     }
 
     function updateBankrollInDb(userId, newBankroll) {
-        fetch(`/api/bankroll/${userId}`, {
+        fetch(`/api/bankrolls/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -517,6 +527,37 @@ export default function BlackjackPage({ user }) {
         .then(response => response.json())
         .catch(error => {
             console.error('Error updating bankroll: ', error)
+        })
+    }
+
+    function addHandToDb() {
+        const testBody = {
+            userId: user._id,
+            dealerCards: state.dealerCards,
+            playerCards: state.playerCards,
+            result: state.result,
+            wagerAmount: state.bankState.wager
+        }
+        console.log(testBody)
+        fetch('api/hands/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: user._id,
+                dealerCards: state.dealerCards,
+                playerCards: state.playerCards,
+                result: state.result,
+                wagerAmount: state.bankState.wager
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Response from server: ', data)
+        })
+        .catch(error => {
+            console.error('Error adding hand to database: ', error)
         })
     }
 
