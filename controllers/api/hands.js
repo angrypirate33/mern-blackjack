@@ -2,7 +2,8 @@ const User = require('../../models/user')
 const Hand = require('../../models/hand')
 
 module.exports = {
-    add
+    add,
+    getHandsByUserId
 }
 
 async function add(req, res) {
@@ -25,6 +26,24 @@ async function add(req, res) {
 
     } catch (error) {
         console.error('Error adding hand: ', error)
+        res.status(500).json({ error: 'Internal server error.' })
+    }
+}
+
+async function getHandsByUserId(req, res) {
+    try {
+        const userId = req.query.userId
+
+        if (!userId) {
+            return res.status(400).json({ error: 'UserId is required.' })
+        }
+
+        const hands = await Hand.find({ userId: userId })
+
+        res.status(200).json(hands)
+
+    } catch (error) {
+        console.error('Error retreiving hand history: ', error)
         res.status(500).json({ error: 'Internal server error.' })
     }
 }
