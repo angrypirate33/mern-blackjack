@@ -12,8 +12,16 @@ const handSchema = new Schema({
         type: [cardSchema],
         required: true
     },
+    dealerScore: {
+        type: Number,
+        required: true
+    },
     playerCards: {
         type: [cardSchema],
+        required: true
+    },
+    playerScore: {
+        type: Number,
         required: true
     },
     result: {

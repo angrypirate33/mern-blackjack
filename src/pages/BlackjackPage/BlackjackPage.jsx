@@ -533,6 +533,17 @@ export default function BlackjackPage({ user }) {
     }
 
     function addHandToDb() {
+        const ob = {
+            userId: user._id,
+                    dealerCards: state.dealerCards,
+                    dealerScore: state.dealerScore.total,
+                    playerCards: state.playerCards,
+                    playerScore: state.playerScore.total,
+                    result: state.result,
+                    wagerAmount: state.bankState.wager,
+                    bankroll: state.bankState.bankAmt
+        }
+        console.log(ob)
         if (!user.isGuest) {
             fetch('api/hands/add', {
                 method: 'POST',
@@ -542,9 +553,12 @@ export default function BlackjackPage({ user }) {
                 body: JSON.stringify({
                     userId: user._id,
                     dealerCards: state.dealerCards,
+                    dealerScore: state.dealerScore.total,
                     playerCards: state.playerCards,
+                    playerScore: state.playerScore.total,
                     result: state.result,
-                    wagerAmount: state.bankState.wager
+                    wagerAmount: state.bankState.wager,
+                    bankroll: state.bankState.bankAmt
                 })
             })
             .then(response => response.json())

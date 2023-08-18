@@ -15,7 +15,9 @@ async function add(req, res) {
         const hand = new Hand({
             userId: req.body.userId,
             dealerCards: req.body.dealerCards,
+            dealerScore: req.body.dealerScore,
             playerCards: req.body.playerCards,
+            playerScore: req.body.playerScore,
             result: req.body.result,
             wagerAmount: req.body.wagerAmount
         })
@@ -38,7 +40,7 @@ async function getHandsByUserId(req, res) {
             return res.status(400).json({ error: 'UserId is required.' })
         }
 
-        const hands = await Hand.find({ userId: userId })
+        const hands = await Hand.find({ userId: userId }).sort({ createdAt: -1 })
 
         res.status(200).json(hands)
 

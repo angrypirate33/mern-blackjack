@@ -24,7 +24,7 @@ export default function HandHistory({ user }) {
             <h2 id='hand-history-title'>Hand History for {user.name}</h2>
 
             <div className='hands-per-page-container'>
-                <div col s12>
+                <div className='col s12'>
                     <h5>Hands per Page: </h5>
                 </div>
                 <div className='input-field col s12'>
@@ -36,6 +36,41 @@ export default function HandHistory({ user }) {
                     </select>
                 </div>
             </div>
+
+            <table className='highlight centered responsive-table'>
+                <thead>
+                    <tr>
+                        <th>Date/Time</th>
+                        <th>Dealer's Cards</th>
+                        <th>Dealer's Score</th>
+                        <th>Player's Cards</th>
+                        <th>Player's Score</th>
+                        <th>Result</th>
+                        <th>Wager</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {currentHands.map(hand => (
+                        <tr>
+                            <td>{new Date(hand.createdAt).toLocaleString()}</td>
+                            <td>
+                                {hand.dealerCards.map(card => (
+                                    <span key={card.id} className={`Card ${card.face}`}></span>
+                                ))}
+                            </td>
+                            <td>{hand.dealerScore}</td>
+                            <td>
+                                {hand.playerCards.map(card => (
+                                    <span key={card.id} className={`Card ${card.face}`}></span>
+                                    ))}
+                            </td>
+                            <td>{hand.playerScore}</td>
+                            <td>{hand.result}</td>
+                            <td>${hand.wagerAmount}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
 
 
         </div>
