@@ -5,6 +5,7 @@ import BlackjackPage from '../BlackjackPage/BlackjackPage'
 import Nav  from '../../components/Nav/Nav'
 import { getUser } from '../../utilities/users-service'
 import './App.css'
+import HandHistory from '../HandHistory/HandHistory'
 
 
 export default function App() {
@@ -26,10 +27,8 @@ export default function App() {
         <>
           <Nav user={user} setUser={handleSetUser} />
           <Routes>
-            <Route 
-              path='/' 
-              element={<BlackjackPage user={user} />} 
-            />
+            <Route path='/' element={<BlackjackPage user={user} />} />
+            <Route path='/history' element={<HandHistory user={user} />} />
           </Routes>
         </>
         : 

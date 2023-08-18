@@ -1,0 +1,8 @@
+.HandHistory {
+    display: flex;
+    justify-content: center;
+}
+
+#hand-history-title {
+    color: white;
+}
