@@ -55,13 +55,13 @@ export default function HandHistory({ user }) {
                             <td>{new Date(hand.createdAt).toLocaleString()}</td>
                             <td>
                                 {hand.dealerCards.map(card => (
-                                    <span key={card.id} className={`Card ${card.face}`}></span>
+                                    <span key={card.id} className={`Card ${card.face} history-card`}></span>
                                 ))}
                             </td>
                             <td>{hand.dealerScore}</td>
                             <td>
                                 {hand.playerCards.map(card => (
-                                    <span key={card.id} className={`Card ${card.face}`}></span>
+                                    <span key={card.id} className={`Card ${card.face} history-card`}></span>
                                     ))}
                             </td>
                             <td>{hand.playerScore}</td>

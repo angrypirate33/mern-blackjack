@@ -241,7 +241,6 @@ export default function BlackjackPage({ user }) {
         })
     }, [])
 
-    
     useEffect(() => {
         if (state.deck.length < 52 && !handActive) {
         const originalDeck = buildOriginalDeck()
@@ -278,6 +277,19 @@ export default function BlackjackPage({ user }) {
             dealerTurn()
         }
     }, [state.turn])
+
+    useEffect(() => {
+        const userId = user._id
+
+        fetch(`/api/bankrolls/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                dispatch({
+                    type: 'UPDATE_BANK_STATE',
+                    payload: { bankAmt: data.bankroll}
+                })
+            })
+    }, [])
     
     function storeWager(wagerAmt) {
         dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
