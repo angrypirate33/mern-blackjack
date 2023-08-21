@@ -186,7 +186,7 @@ export default function BlackjackPage({ user }) {
                     message: `It's a push, $${state.bankState.wager} has been returned to the player's bankroll.`,
                     bankState: {
                         ...state.bankState,
-                        bankAmt: state.bankState.bankAmt + state.bankState.wager
+                        bankAmt: state.bankState.bankAmt + (state.bankState.wager * 1)
                     },
                     turn: 'player',
                     result: 'push'
