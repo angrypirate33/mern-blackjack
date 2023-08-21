@@ -19,12 +19,16 @@ export default function Nav({ user, setUser }) {
                     Play Blackjack
                 </Link>
                 &nbsp;&nbsp;&nbsp;
-                |&nbsp;&nbsp;&nbsp;
-                <Link
-                    to='/history'
-                >
-                    View Hand History
-                </Link>
+                {!user.isGuest && (
+                    <>
+                        |&nbsp;&nbsp;&nbsp;
+                        <Link
+                            to='/history'
+                        >
+                            View Hand History
+                        </Link>
+                    </>
+                )}
                 <Link 
                     className='right' 
                     id='logout-btn'
