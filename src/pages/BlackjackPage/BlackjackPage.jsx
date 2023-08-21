@@ -279,16 +279,18 @@ export default function BlackjackPage({ user }) {
     }, [state.turn])
 
     useEffect(() => {
-        const userId = user._id
-
-        fetch(`/api/bankrolls/${userId}`)
-            .then(response => response.json())
-            .then(data => {
-                dispatch({
-                    type: 'UPDATE_BANK_STATE',
-                    payload: { bankAmt: data.bankroll}
+        if (!user.isGuest) {
+            const userId = user._id
+    
+            fetch(`/api/bankrolls/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    dispatch({
+                        type: 'UPDATE_BANK_STATE',
+                        payload: { bankAmt: data.bankroll}
+                    })
                 })
-            })
+        }
     }, [])
     
     function storeWager(wagerAmt) {
@@ -545,17 +547,7 @@ export default function BlackjackPage({ user }) {
     }
 
     function addHandToDb() {
-        const ob = {
-            userId: user._id,
-                    dealerCards: state.dealerCards,
-                    dealerScore: state.dealerScore.total,
-                    playerCards: state.playerCards,
-                    playerScore: state.playerScore.total,
-                    result: state.result,
-                    wagerAmount: state.bankState.wager,
-                    bankroll: state.bankState.bankAmt
-        }
-        console.log(ob)
+
         if (!user.isGuest) {
             fetch('api/hands/add', {
                 method: 'POST',
