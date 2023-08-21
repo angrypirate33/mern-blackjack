@@ -91,7 +91,48 @@ export default function HandHistory({ user }) {
                 </tbody>
             </table>
 
+            <div className='card-view'>
+                {currentHands.map(hand => (
+                    <div className='card grey darken-3'>
+                        <div className='card-content white-text'>
+                            <span className='card-title'>{new Date(hand.createdAt).toLocaleString()}</span>
+                            <div className='hand-row'>
+                                <span className='card-subtitle'>Dealer's Cards</span>
+                            </div>
+                            <div className='hand-row'>
+                                    <div id='dealer-section'>
+                                        {hand.dealerCards.map(card => (
+                                            <span key={card.id} className={`Card ${card.face} history-card`}></span>
+                                            ))}
+                                    </div>
+                            </div>
+                            <div className='hand-row'>
+                                <span className='history-score'>{hand.dealerScore}</span>
+                            </div>
+                            <div className='hand-row'>
+                                <span className='card-subtitle'>Player's Cards</span>
+                            </div>
+                            <div className='hand-row'>
+                                <div id='player-section'>
+                                    {hand.playerCards.map(card => (
+                                        <span key={card.id} className={`Card ${card.face} history-card`}></span>
+                                        ))}
+                                </div>
+                            </div>
+                            <div className='hand-row'>
+                                <span className='history-score'>{hand.playerScore}</span>
+                            </div>
+                            <div className='hand-row'>
+                                <span id='history-result'>{hand.result}</span>
+                                <span id='history-wager'>${hand.wagerAmount}</span>
+                            </div>
+                        </div>
 
+                    </div>
+
+                ))}
+
+            </div>
         </div>
     )
 }
