@@ -1,6 +1,6 @@
 .HandHistory {
-    justify-content: center;
     color: white;
+    font-family: 'Roboto Slab', serif;
 }
 
 #hand-history-title {
@@ -20,7 +20,30 @@
     margin-left: 1em;
 }
 
+#history-table {
+    width: 75vw;
+    margin: 0 auto;
+}
+
+#table-head {
+    font-size: 1.5em;
+}
+
+#history-date {
+    font-size: 1.125em;
+}
+
+.history-score {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 .history-card {
     width: 4.36em;
     height: 6em;
+}
+
+#history-result, #history-wager {
+    font-size: 1.25em;
+    font-weight: bold;
 }

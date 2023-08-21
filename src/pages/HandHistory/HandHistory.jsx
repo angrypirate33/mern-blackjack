@@ -37,8 +37,8 @@ export default function HandHistory({ user }) {
                 </div>
             </div>
 
-            <table className='highlight centered responsive-table'>
-                <thead>
+            <table className='highlight centered responsive-table' id='history-table'>
+                <thead id='table-head'>
                     <tr>
                         <th>Date/Time</th>
                         <th>Dealer's Cards</th>
@@ -52,21 +52,21 @@ export default function HandHistory({ user }) {
                 <tbody>
                     {currentHands.map(hand => (
                         <tr>
-                            <td>{new Date(hand.createdAt).toLocaleString()}</td>
+                            <td id='history-date'>{new Date(hand.createdAt).toLocaleString()}</td>
                             <td>
                                 {hand.dealerCards.map(card => (
                                     <span key={card.id} className={`Card ${card.face} history-card`}></span>
                                 ))}
                             </td>
-                            <td>{hand.dealerScore}</td>
+                            <td className='history-score'>{hand.dealerScore}</td>
                             <td>
                                 {hand.playerCards.map(card => (
                                     <span key={card.id} className={`Card ${card.face} history-card`}></span>
                                     ))}
                             </td>
-                            <td>{hand.playerScore}</td>
-                            <td>{hand.result}</td>
-                            <td>${hand.wagerAmount}</td>
+                            <td className='history-score'>{hand.playerScore}</td>
+                            <td id='history-result'>{hand.result}</td>
+                            <td id='history-wager'>${hand.wagerAmount}</td>
                         </tr>
                     ))}
                 </tbody>
