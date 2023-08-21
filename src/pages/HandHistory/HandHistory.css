@@ -20,6 +20,10 @@
     margin-left: 1em;
 }
 
+.navigation-container {
+    text-align: center;
+}
+
 #history-table {
     width: 75vw;
     margin: 0 auto;

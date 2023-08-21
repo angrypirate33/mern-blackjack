@@ -12,6 +12,8 @@ export default function HandHistory({ user }) {
     const indexOfFirstHand = indexOfLastHand - handsPerPage
     const currentHands = handsData.slice(indexOfFirstHand, indexOfLastHand)
 
+    const totalPages = Math.ceil(handsData.length / handsPerPage)
+
     useEffect(() => {
         fetch(`api/hands/history?userId=${user._id}`)
             .then(res => res.json())
@@ -35,6 +37,23 @@ export default function HandHistory({ user }) {
                         <option value={100}>100</option>
                     </select>
                 </div>
+            </div>
+
+            <div className='navigation-container'>
+                <button
+                    className='waves-effect waves-light btn red darken-4'
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                    Previous Page
+                </button>
+                <button
+                    className='waves-effect waves-light btn red darken-4'
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                >
+                    Next Page
+                </button>
             </div>
 
             <table className='highlight centered responsive-table' id='history-table'>
