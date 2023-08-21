@@ -30,7 +30,7 @@ export default function Nav({ user, setUser }) {
                 <nav className='green darken-4'>
                     <div className='nav-wrapper'>
                         <a href='#' data-target='sidenav-links' className='sidenav-trigger left'><i className='material-icons'>menu</i></a>
-                        <span id='welcome-message'>Welcome, {user.name}</span>&nbsp;&nbsp;&nbsp;
+                        <span id='welcome-message'>Welcome, {user.name}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <ul className='hide-on-med-and-down nav-links'>
                             <li><Link to='/' > Play Blackjack </Link></li>
                             <li>
@@ -50,13 +50,14 @@ export default function Nav({ user, setUser }) {
                 </nav>
             </div>
                 <ul className='sidenav' id='sidenav-links'>
-                    <li><Link onClick={closeSidenav} to='/' > Play Blackjack </Link></li>
+                    <li className='white-text flow-text' id='sidenav-menu-header'>Menu</li>
+                    <li><Link onClick={closeSidenav} to='/' className='waves-effect waves-light white-text' > Play Blackjack </Link></li>
                     <li>
                         {!user.isGuest && (
-                            <Link onClick={closeSidenav} to='/history' > View Hand History </Link>
+                            <Link onClick={closeSidenav} to='/history' className='waves-effect waves-light white-text' > View Hand History </Link>
                         )}
                     </li>
-                    <li><Link onClick={() => {closeSidenav(); handleLogOut()}} to=''>Log Out</Link></li>
+                    <li><Link onClick={() => {closeSidenav(); handleLogOut()}} to='' className='waves-effect waves-light white-text'>Log Out</Link></li>
                 </ul>
         </header>
             
