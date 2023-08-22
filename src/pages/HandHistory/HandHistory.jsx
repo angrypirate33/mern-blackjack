@@ -90,7 +90,7 @@ export default function HandHistory({ user }) {
                                     ))}
                             </td>
                             <td className='history-score'>{hand.playerScore}</td>
-                            <td id='history-result'>{hand.result}</td>
+                            <td className={`history-result ${hand.result}`}>{hand.result}</td>
                             <td id='history-wager'>${hand.wagerAmount}</td>
                         </tr>
                     ))}

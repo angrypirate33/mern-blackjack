@@ -52,9 +52,17 @@
     height: 6em;
 }
 
-#history-result, #history-wager {
+.history-result, #history-wager {
     font-size: 1.25em;
     font-weight: bold;
+}
+
+.history-result.loss {
+    color: red;
+}
+
+.history-result.win {
+    color: green;
 }
 
 .card-view {
