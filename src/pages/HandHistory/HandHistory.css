@@ -78,4 +78,39 @@
     .card-view {
         display: block;
     }
+
+    .history-result {
+        font-size: 1.25em;
+    }
+
+    #history-wager {
+        padding-left: 0.5em;
+    }
+
+    .history-result.loss {
+        color: red;
+    }
+
+    .history-result.win {
+        color: green;
+    }
+
+    .card-subtitle {
+        font-size: 1.5em;
+        margin-bottom: .5em;
+    }
+
+    .history-card {
+        width: 3.5em;
+        height: 4.816em;
+    }
+
+    .history-score {
+        margin-top: 0.5em;
+    }
+
+    #history-date {
+        font-size: 1.25em;
+        padding-top: 0.5em;
+    }
 }

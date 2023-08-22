@@ -95,7 +95,10 @@ export default function HandHistory({ user }) {
                 {currentHands.map(hand => (
                     <div className='card grey darken-3'>
                         <div className='card-content white-text'>
-                            <span className='card-title'>{new Date(hand.createdAt).toLocaleString()}</span>
+                            <span className='card-title'>
+                                <span className={`history-result ${hand.result}`}>{hand.result}</span>
+                                <span id='history-wager'>${hand.wagerAmount}</span>
+                            </span>
                             <div className='hand-row'>
                                 <span className='card-subtitle'>Dealer's Cards</span>
                             </div>
@@ -123,8 +126,7 @@ export default function HandHistory({ user }) {
                                 <span className='history-score'>{hand.playerScore}</span>
                             </div>
                             <div className='hand-row'>
-                                <span id='history-result'>{hand.result}</span>
-                                <span id='history-wager'>${hand.wagerAmount}</span>
+                                <span id='history-date'>{new Date(hand.createdAt).toLocaleString()}</span>
                             </div>
                         </div>
 
