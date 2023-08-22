@@ -220,7 +220,8 @@ export default function BlackjackPage({ user }) {
                     playerBlackjack: false,
                     dealerBlackjack: false,
                     turn: 'player',
-                    bankState: { ...state.bankState, wager: 0 }
+                    bankState: { ...state.bankState, wager: 0 },
+                    result: null
                 }
             default:
                 throw new Error(`Unhandled action type: ${action.type}`)
@@ -292,6 +293,25 @@ export default function BlackjackPage({ user }) {
                 })
         }
     }, [])
+
+    useEffect(() => {
+        let timeout
+
+        if (state.bankState.bankAmt === 0 && state.result === 'loss') {
+            timeout = setTimeout(() => {
+                dispatch({
+                    type: 'UPDATE_BANK_STATE',
+                    payload: { bankAmt: 1000 }
+                })
+                dispatch({
+                    type: 'UPDATE_MESSAGE',
+                    payload: 'You went bankrupt. Another $1000 has been added to your bankroll by the house.'
+                })
+            }, 2000)
+        }
+
+        return () => clearTimeout(timeout)
+    }, [state.bankState.bankAmt, state.result])
     
     function storeWager(wagerAmt) {
         dispatch({ type: 'STORE_WAGER', payload: wagerAmt })
