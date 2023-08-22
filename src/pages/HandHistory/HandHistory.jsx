@@ -21,6 +21,12 @@ export default function HandHistory({ user }) {
             .catch(error => console.error(error))
     }, [user._id])
 
+    useEffect(() => {
+        if (window.M && document.querySelector('select')) {
+            window.M.FormSelect.init(document.querySelector('select'))
+        }
+    }, [])
+
     return (
         <div className='HandHistory'>
             <h2 id='hand-history-title'>Hand History for {user.name}</h2>
@@ -30,7 +36,7 @@ export default function HandHistory({ user }) {
                     <h5>Hands per Page: </h5>
                 </div>
                 <div className='input-field col s12'>
-                    <select onChange={(e) => setHandsPerPage(Number(e.target.value))} className='browser-default' id='hands-per-page-dropdown'>
+                    <select onChange={(e) => setHandsPerPage(Number(e.target.value))} id='hands-per-page-dropdown'>
                         <option value={25}>25</option>
                         <option value={50}>50</option>
                         <option value={75}>75</option>
@@ -93,7 +99,7 @@ export default function HandHistory({ user }) {
 
             <div className='card-view'>
                 {currentHands.map(hand => (
-                    <div className='card grey darken-3'>
+                    <div className='card'>
                         <div className='card-content white-text'>
                             <span className='card-title'>
                                 <span className={`history-result ${hand.result}`}>{hand.result}</span>

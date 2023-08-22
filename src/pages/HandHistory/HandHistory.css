@@ -20,6 +20,11 @@
     margin-left: 1em;
 }
 
+.select-dropdown {
+    color: white;
+    text-align: center;
+}
+
 .navigation-container {
     text-align: center;
 }
@@ -71,6 +76,7 @@
 }
 
 @media screen and (max-width: 1024px) {
+
     #history-table {
         display: none;
     }
@@ -112,5 +118,20 @@
     #history-date {
         font-size: 1.25em;
         padding-top: 0.5em;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .history-card {
+        width: 2em;
+        height: 2.752em;
+    }
+
+    .card-subtitle {
+        margin-bottom: 1.5em;
+    }
+
+    .history-score {
+        margin-top: 1.25em;
     }
 }
