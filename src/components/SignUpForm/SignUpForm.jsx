@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import { signUp } from '../../utilities/users-service'
+import './SignUpForm.css'
 
 export default class SignUpForm extends Component {
     state = {
@@ -40,13 +41,13 @@ export default class SignUpForm extends Component {
                 <div className='card green darken-4'>
                     <div className='card-content'>
                         <form autoComplete="off" onSubmit={this.handleSubmit}>
-                            <label className='white-text'>Name</label>
+                            <label className='signup-header white-text'>Name</label>
                             <input className='white-text' type="text" name="name" value={this.state.name} onChange={this.handleChange} required />
-                            <label className='white-text'>Email</label>
+                            <label className='signup-header white-text'>Email</label>
                             <input className='white-text' type="email" name="email" value={this.state.email} onChange={this.handleChange} required />
-                            <label className='white-text'>Password</label>
+                            <label className='signup-header white-text'>Password</label>
                             <input className='white-text' type="password" name="password" value={this.state.password} onChange={this.handleChange} required />
-                            <label className='white-text'>Confirm</label>
+                            <label className='signup-header white-text'>Confirm</label>
                             <input className='white-text' type="password" name="confirm" value={this.state.confirm} onChange={this.handleChange} required />
                             <button className='waves-effect waves-light btn-large red' type="submit" disabled={disable}>SIGN UP</button>
                         </form>

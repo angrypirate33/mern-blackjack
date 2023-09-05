@@ -16,39 +16,21 @@
 }
 
 #login-btn {
-    width: 50%;
+    width: 26em;
     margin: 0 auto;
 }
 
 #guest-button {
-    width: 50%;
+    width: 26em;
     margin: 0 auto;
-    margin-top: 3em;
+    margin-top: 3em
 }
 
-@media (max-width: 1100px) {
-    #login-btn {
-        width: 45%
-    }
-}
-
-@media (max-width: 1100px) {
-    #login-container {
-        width: 85vw
-    }
-
-}
 
 @media (max-width: 750px) {
     #login-btn {
-        width: 85vw
+        
     }
 }
 
-@media (max-width: 1100px) {
-    #login-container {
-        width: 100vw
-    }
-
-}
 
